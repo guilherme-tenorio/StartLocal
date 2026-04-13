@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StartLocal - Login Candidato</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <%- include('partials/navbar') %>
+
+    <main class="flex-grow-1 d-flex justify-content-center align-items-center">
+        <div class="card p-4 shadow form-login">
+            <div class="text-center mb-4">
+                <i class="bi bi-person-circle display-4 text-primary"></i>
+                <h3 class="mt-2">Login — Candidato</h3>
+            </div>
+
+            <% if (erro) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i><%= erro %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+            <% if (typeof query !== 'undefined' && query && query.erro === 'acesso_negado') { %>
+                <div class="alert alert-warning" role="alert">
+                    <i class="bi bi-lock me-2"></i>Você precisa fazer login para acessar essa página.
+                </div>
+            <% } %>
+
+            <form action="/login-candidato" method="POST">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">E-mail</label>
+                    <input type="email" name="email" class="form-control" required placeholder="exemplo@email.com"/>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Senha</label>
+                    <input type="password" name="senha" class="form-control" required/>
+                </div>
+                <div class="mb-3 text-center">
+                    <a href="#" class="text-muted small">Esqueci minha senha</a>
+                </div>
+                <div class="mb-3 text-center">
+                    <p class="mb-0">Ainda não tem conta? <a href="/cadastro-candidato">Cadastre-se</a></p>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 fw-bold">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
+                </button>
+            </form>
+
+            <hr class="my-3">
+            <p class="text-center mb-0">
+                <small class="text-muted">É uma empresa? </small>
+                <a href="/login-empresa" class="small">Acesse aqui</a>
+            </p>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

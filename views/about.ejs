@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StartLocal - Como Funciona</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <%- include('partials/navbar') %>
+
+    <main class="flex-grow-1">
+
+        <!-- HERO -->
+        <section class="bg-primary text-white py-5 text-center">
+            <div class="container">
+                <h1 class="display-6 fw-bold">Como o StartLocal Funciona</h1>
+                <p class="lead mt-2 mb-0">A plataforma que conecta estudantes de TI a empresas de forma inteligente.</p>
+            </div>
+        </section>
+
+        <!-- CARDS PRINCIPAIS -->
+        <section class="py-5">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm text-center p-3">
+                            <div class="card-body">
+                                <i class="bi bi-person-fill display-4 text-primary mb-3"></i>
+                                <h5 class="fw-bold">Para Candidatos</h5>
+                                <p class="text-muted">Crie seu perfil, destaque suas habilidades e encontre vagas de estágio compatíveis com seu nível de conhecimento.</p>
+                                <a href="/cadastro-candidato" class="btn btn-outline-primary btn-sm">Criar conta grátis</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm text-center p-3">
+                            <div class="card-body">
+                                <i class="bi bi-building display-4 text-warning mb-3"></i>
+                                <h5 class="fw-bold">Para Empresas</h5>
+                                <p class="text-muted">Publique vagas de estágio com nível de requisitos definido e encontre estudantes com o perfil técnico certo para sua equipe.</p>
+                                <a href="/cadastro-empresa" class="btn btn-outline-warning btn-sm">Cadastrar empresa</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm text-center p-3">
+                            <div class="card-body">
+                                <i class="bi bi-bar-chart-fill display-4 text-success mb-3"></i>
+                                <h5 class="fw-bold">Vagas por Nível</h5>
+                                <p class="text-muted">O diferencial do StartLocal: vagas organizadas por nível técnico — Básico, Intermediário e Avançado — para uma busca mais precisa.</p>
+                                <a href="/vagas" class="btn btn-outline-success btn-sm">Ver vagas</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NÍVEIS EXPLICADOS -->
+        <section class="py-5 bg-light">
+            <div class="container">
+                <h2 class="text-center fw-bold mb-5">Os 3 Níveis de Vagas</h2>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card border-success border-2 h-100">
+                            <div class="card-header bg-success text-white fw-bold text-center">
+                                <i class="bi bi-1-circle me-2"></i>Básico
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Ideal para quem está nos <strong>primeiros períodos</strong> da faculdade ou aprendendo por conta própria.</p>
+                                <ul class="text-muted small">
+                                    <li>Lógica de programação</li>
+                                    <li>HTML e CSS básicos</li>
+                                    <li>Suporte técnico e helpdesk</li>
+                                    <li>Sem experiência prévia exigida</li>
+                                </ul>
+                                <a href="/vagas?nivel=basico" class="btn btn-success btn-sm w-100">Ver vagas básicas</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-warning border-2 h-100">
+                            <div class="card-header bg-warning text-dark fw-bold text-center">
+                                <i class="bi bi-2-circle me-2"></i>Intermediário
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Para quem já tem <strong>alguma prática</strong> e conhece as ferramentas do dia a dia da área.</p>
+                                <ul class="text-muted small">
+                                    <li>JavaScript, Python ou outra linguagem</li>
+                                    <li>Git e controle de versão</li>
+                                    <li>Banco de dados (SQL ou NoSQL)</li>
+                                    <li>Projetos pessoais ou acadêmicos</li>
+                                </ul>
+                                <a href="/vagas?nivel=intermediario" class="btn btn-warning btn-sm w-100 text-dark">Ver vagas intermediárias</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-danger border-2 h-100">
+                            <div class="card-header bg-danger text-white fw-bold text-center">
+                                <i class="bi bi-3-circle me-2"></i>Avançado
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Para estudantes com <strong>alto nível técnico</strong>, vivência em projetos reais e múltiplas tecnologias.</p>
+                                <ul class="text-muted small">
+                                    <li>Frameworks modernos (React, Node, etc.)</li>
+                                    <li>Docker, CI/CD, Cloud</li>
+                                    <li>Segurança, IA, Data Science</li>
+                                    <li>Experiência prática comprovada</li>
+                                </ul>
+                                <a href="/vagas?nivel=avancado" class="btn btn-danger btn-sm w-100">Ver vagas avançadas</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <%- include('partials/footer') %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

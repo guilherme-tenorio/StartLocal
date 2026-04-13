@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StartLocal - Cadastro Empresa</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <%- include('partials/navbar') %>
+
+    <main class="flex-grow-1 d-flex justify-content-center align-items-center py-5">
+        <div class="card p-4 shadow form-login" style="max-width: 480px; width: 100%;">
+            <div class="text-center mb-4">
+                <i class="bi bi-building-fill display-4 text-warning"></i>
+                <h3 class="mt-2">Cadastrar Empresa</h3>
+                <p class="text-muted small">Publique vagas e encontre talentos em TI</p>
+            </div>
+
+            <!-- Mensagens de feedback -->
+            <% if (erro) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i><%= erro %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+            <% if (sucesso) { %>
+                <div class="alert alert-success" role="alert">
+                    <i class="bi bi-check-circle me-2"></i><%= sucesso %>
+                    <a href="/login-empresa" class="btn btn-success btn-sm ms-2">Fazer Login</a>
+                </div>
+            <% } %>
+
+            <form action="/cadastro-empresa" method="POST">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Nome da Empresa*</label>
+                    <input type="text" name="nomeEmpresa" class="form-control" required placeholder="Ex: TechSolutions LTDA"/>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">CNPJ*</label>
+                    <input type="text" name="cnpj" class="form-control" required placeholder="00.000.000/0000-00"/>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">E-mail Corporativo*</label>
+                    <input type="email" name="email" class="form-control" required placeholder="contato@empresa.com"/>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Área de Atuação</label>
+                    <select name="area" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option value="Desenvolvimento de Software">Desenvolvimento de Software</option>
+                        <option value="Infraestrutura e Redes">Infraestrutura e Redes</option>
+                        <option value="Segurança da Informação">Segurança da Informação</option>
+                        <option value="Data Science / IA">Data Science / IA</option>
+                        <option value="Suporte de TI">Suporte de TI</option>
+                        <option value="Consultoria de TI">Consultoria de TI</option>
+                        <option value="Outra">Outra</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Senha*</label>
+                    <input type="password" name="senha" class="form-control" required minlength="6"/>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Confirmar Senha*</label>
+                    <input type="password" name="confirmarSenha" class="form-control" required minlength="6"/>
+                </div>
+
+                <button type="submit" class="btn btn-warning w-100 fw-bold">
+                    <i class="bi bi-building-add me-2"></i>Cadastrar Empresa
+                </button>
+            </form>
+
+            <p class="text-center mt-3 mb-0">
+                Já tem conta? <a href="/login-empresa">Fazer login</a>
+            </p>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

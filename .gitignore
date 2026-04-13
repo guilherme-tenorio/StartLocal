@@ -1,0 +1,14 @@
+# Dependencias
+node_modules/
+
+# Segurança e Configurações
+.env
+.env.local
+
+# Logs
+*.log
+
+# Sistema
+.DS_Store
+thumbs.db
+.vscode/

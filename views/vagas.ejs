@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StartLocal - Vagas de Estágio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <%- include('partials/navbar') %>
+
+    <main class="flex-grow-1 py-5">
+        <div class="container">
+
+            <!-- TÍTULO -->
+            <div class="row mb-4">
+                <div class="col">
+                    <h2 class="fw-bold">
+                        <% if (nivelFiltro === 'basico') { %>
+                            <span class="badge bg-success me-2">Básico</span> Vagas para Iniciantes
+                        <% } else if (nivelFiltro === 'intermediario') { %>
+                            <span class="badge bg-warning text-dark me-2">Intermediário</span> Vagas Intermediárias
+                        <% } else if (nivelFiltro === 'avancado') { %>
+                            <span class="badge bg-danger me-2">Avançado</span> Vagas Avançadas
+                        <% } else { %>
+                            <i class="bi bi-search me-2 text-primary"></i>Todas as Vagas
+                        <% } %>
+                    </h2>
+                    <p class="text-muted"><strong><%= totalVagas %></strong> vaga(s) encontrada(s)</p>
+                </div>
+            </div>
+
+            <!-- FILTROS DE NÍVEL -->
+            <div class="row mb-4">
+                <div class="col">
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="/vagas" class="btn <%= nivelFiltro === 'todos' ? 'btn-secondary' : 'btn-outline-secondary' %> btn-sm">
+                            Todos os Níveis
+                        </a>
+                        <a href="/vagas?nivel=basico" class="btn <%= nivelFiltro === 'basico' ? 'btn-success' : 'btn-outline-success' %> btn-sm">
+                            <i class="bi bi-circle-fill me-1"></i>Básico
+                        </a>
+                        <a href="/vagas?nivel=intermediario" class="btn <%= nivelFiltro === 'intermediario' ? 'btn-warning' : 'btn-outline-warning' %> btn-sm">
+                            <i class="bi bi-circle-fill me-1"></i>Intermediário
+                        </a>
+                        <a href="/vagas?nivel=avancado" class="btn <%= nivelFiltro === 'avancado' ? 'btn-danger' : 'btn-outline-danger' %> btn-sm">
+                            <i class="bi bi-circle-fill me-1"></i>Avançado
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARDS DE VAGAS -->
+            <% if (vagas.length === 0) { %>
+                <div class="text-center py-5">
+                    <i class="bi bi-search display-1 text-muted"></i>
+                    <h4 class="mt-3 text-muted">Nenhuma vaga encontrada</h4>
+                    <a href="/vagas" class="btn btn-primary mt-3">Ver todas as vagas</a>
+                </div>
+            <% } else { %>
+                <div class="row g-4">
+                    <% vagas.forEach(function(vaga) { %>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm border-0 vaga-card">
+                                <div class="card-body d-flex flex-column">
+                                    <!-- Badge de nível -->
+                                    <div class="mb-2">
+                                        <% if (vaga.nivel === 'basico') { %>
+                                            <span class="badge bg-success">Básico</span>
+                                        <% } else if (vaga.nivel === 'intermediario') { %>
+                                            <span class="badge bg-warning text-dark">Intermediário</span>
+                                        <% } else { %>
+                                            <span class="badge bg-danger">Avançado</span>
+                                        <% } %>
+                                        <span class="badge bg-light text-dark border ms-1"><%= vaga.modalidade %></span>
+                                    </div>
+
+                                    <h5 class="card-title fw-bold"><%= vaga.titulo %></h5>
+
+                                    <p class="text-muted mb-1">
+                                        <i class="bi bi-building me-1"></i><strong><%= vaga.empresa %></strong>
+                                    </p>
+                                    <p class="text-muted small mb-2">
+                                        <i class="bi bi-geo-alt me-1"></i><%= vaga.cidade %>
+                                        <span class="mx-2">|</span>
+                                        <i class="bi bi-tag me-1"></i><%= vaga.area %>
+                                    </p>
+
+                                    <p class="card-text small text-muted mb-3 flex-grow-1">
+                                        <%= vaga.descricao ? vaga.descricao.substring(0, 120) + '...' : '' %>
+                                    </p>
+
+                                    <!-- Requisitos -->
+                                    <div class="mb-3">
+                                        <% if (vaga.requisitos && vaga.requisitos.length > 0) { %>
+                                            <% vaga.requisitos.slice(0, 4).forEach(function(req) { %>
+                                                <span class="badge bg-light text-dark border me-1 mb-1"><%= req %></span>
+                                            <% }) %>
+                                            <% if (vaga.requisitos.length > 4) { %>
+                                                <span class="badge bg-light text-muted border">+<%= vaga.requisitos.length - 4 %></span>
+                                            <% } %>
+                                        <% } %>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                                        <div>
+                                            <small class="text-success fw-bold">
+                                                <i class="bi bi-currency-dollar"></i><%= vaga.bolsa %>
+                                            </small>
+                                            <br>
+                                            <small class="text-muted">
+                                                <i class="bi bi-clock me-1"></i><%= vaga.cargaHoraria %>
+                                            </small>
+                                        </div>
+                                        <a href="/login-candidato" class="btn btn-primary btn-sm">
+                                            Candidatar-se
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } %>
+
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

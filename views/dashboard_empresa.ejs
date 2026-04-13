@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StartLocal - Painel da Empresa</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- NAVBAR EMPRESA -->
+    <nav class="navbar navbar-expand-lg bg-primary">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand text-white fw-bold" href="/"><i class="bi bi-briefcase-fill me-2"></i>StartLocal</a>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <span class="text-white">
+                    <i class="bi bi-building me-1"></i>
+                    <strong><%= empresa.nomeEmpresa %></strong>
+                </span>
+                <a href="/logout" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-box-arrow-right me-1"></i>Sair
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow-1 py-5">
+        <div class="container">
+
+            <!-- FEEDBACK -->
+            <% if (typeof query !== 'undefined' && query && query.sucesso === 'vaga_publicada') { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>Vaga publicada com sucesso!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+
+            <!-- BOAS VINDAS -->
+            <div class="bg-light rounded p-4 mb-4 d-flex align-items-center gap-3">
+                <i class="bi bi-building-fill display-4 text-warning"></i>
+                <div>
+                    <h4 class="fw-bold mb-1"><%= empresa.nomeEmpresa %></h4>
+                    <p class="text-muted mb-0"><%= empresa.email %> &nbsp;·&nbsp; <strong><%= minhasVagas.length %></strong> vaga(s) publicada(s)</p>
+                </div>
+                <div class="ms-auto">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNovaVaga">
+                        <i class="bi bi-plus-circle me-2"></i>Publicar Nova Vaga
+                    </button>
+                </div>
+            </div>
+
+            <!-- VAGAS PUBLICADAS -->
+            <h5 class="fw-bold mb-3"><i class="bi bi-list-ul me-2 text-primary"></i>Minhas Vagas</h5>
+
+            <% if (minhasVagas.length === 0) { %>
+                <div class="text-center py-5 bg-light rounded">
+                    <i class="bi bi-briefcase display-3 text-muted"></i>
+                    <h5 class="mt-3 text-muted">Você ainda não publicou nenhuma vaga</h5>
+                    <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalNovaVaga">
+                        Publicar Primeira Vaga
+                    </button>
+                </div>
+            <% } else { %>
+                <div class="row g-3">
+                    <% minhasVagas.forEach(function(vaga) { %>
+                        <div class="col-md-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h6 class="fw-bold"><%= vaga.titulo %></h6>
+                                        <% if (vaga.nivel === 'basico') { %>
+                                            <span class="badge bg-success">Básico</span>
+                                        <% } else if (vaga.nivel === 'intermediario') { %>
+                                            <span class="badge bg-warning text-dark">Intermediário</span>
+                                        <% } else { %>
+                                            <span class="badge bg-danger">Avançado</span>
+                                        <% } %>
+                                    </div>
+                                    <p class="text-muted small mb-1">
+                                        <i class="bi bi-geo-alt me-1"></i><%= vaga.cidade %> &nbsp;|&nbsp;
+                                        <i class="bi bi-wifi me-1"></i><%= vaga.modalidade %>
+                                    </p>
+                                    <p class="text-success small fw-bold"><%= vaga.bolsa %> — <%= vaga.cargaHoraria %></p>
+                                    <% if (vaga.requisitos && vaga.requisitos.length > 0) { %>
+                                        <% vaga.requisitos.slice(0, 3).forEach(function(req) { %>
+                                            <span class="badge bg-light text-dark border me-1"><%= req %></span>
+                                        <% }) %>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } %>
+
+        </div>
+    </main>
+
+    <!-- MODAL: PUBLICAR NOVA VAGA -->
+    <div class="modal fade" id="modalNovaVaga" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Publicar Nova Vaga</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/publicar-vaga" method="POST">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold">Título da Vaga*</label>
+                                <input type="text" name="titulo" class="form-control" required placeholder="Ex: Estágio em Desenvolvimento Web"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Nível*</label>
+                                <select name="nivel" class="form-select" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="basico">Básico</option>
+                                    <option value="intermediario">Intermediário</option>
+                                    <option value="avancado">Avançado</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Cidade*</label>
+                                <input type="text" name="cidade" class="form-control" required placeholder="Ex: Maceió - AL"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Modalidade</label>
+                                <select name="modalidade" class="form-select">
+                                    <option value="Presencial">Presencial</option>
+                                    <option value="Híbrido">Híbrido</option>
+                                    <option value="Remoto">Remoto</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Área</label>
+                                <select name="area" class="form-select">
+                                    <option value="Desenvolvimento">Desenvolvimento</option>
+                                    <option value="Infraestrutura">Infraestrutura</option>
+                                    <option value="Segurança">Segurança da Informação</option>
+                                    <option value="Data Science">Data Science / IA</option>
+                                    <option value="Suporte">Suporte de TI</option>
+                                    <option value="Qualidade">Qualidade (QA)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Bolsa</label>
+                                <input type="text" name="bolsa" class="form-control" placeholder="R$ 1.000,00"/>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Carga Horária</label>
+                                <input type="text" name="cargaHoraria" class="form-control" placeholder="30h/semana"/>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Requisitos</label>
+                                <input type="text" name="requisitos" class="form-control" placeholder="JavaScript, Node.js, Git"/>
+                                <div class="form-text">Separe os requisitos por vírgula</div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Descrição da Vaga</label>
+                                <textarea name="descricao" class="form-control" rows="3" placeholder="Descreva as atividades e o perfil desejado..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer px-0 pb-0 mt-3">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send me-2"></i>Publicar Vaga
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
