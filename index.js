@@ -20,9 +20,6 @@ const DB_NAME = (process.env.MONGODB_DB || 'startlocal').trim();
 
 let db;
 
-// ============================================================
-// CONFIGURAÇÕES DO EXPRESS
-// ============================================================
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -42,11 +39,6 @@ app.use(
     })
 );
 
-// ============================================================
-// MIDDLEWARE GLOBAL DE VARIÁVEIS LOCAIS
-// ============================================================
-// Esse script faz o EJS enxergar a sessão aberta nas abas do site
-// sem precisar re-exportar os dados a toda hora numa renderização.
 app.use((req, res, next) => {
     res.locals.candidato = req.session ? req.session.candidato : null;
     res.locals.empresa = req.session ? req.session.empresa : null;
@@ -54,9 +46,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// ============================================================
-// MIDDLEWARES DE AUTENTICAÇÃO
-// ============================================================
 
 function authCandidato(req, res, next) {
     if (req.session && req.session.candidato) {
@@ -74,9 +63,6 @@ function authEmpresa(req, res, next) {
     }
 }
 
-// ============================================================
-// ROTAS PÚBLICAS
-// ============================================================
 
 app.get('/', (req, res) => {
     res.render('home');
@@ -86,9 +72,6 @@ app.get('/about', (req, res) => {
     res.render('about');
 });
 
-// ============================================================
-// ROTAS DE VAGAS (público)
-// ============================================================
 
 app.get('/vagas', async (req, res) => {
     try {
@@ -115,12 +98,11 @@ app.get('/vagas', async (req, res) => {
     }
 });
 
-// Detalhes explícitos de UMA vaga pelo ID
+
 app.get('/vaga/:id', async (req, res) => {
     try {
         const vagaId = req.params.id;
         
-        // Verifica se a string ID é um id válido do MongoDB
         if (!ObjectId.isValid(vagaId)) {
             return res.status(404).send('Identificador de vaga inválido.');
         }
@@ -149,9 +131,6 @@ app.get('/vaga/:id', async (req, res) => {
     }
 });
 
-// ============================================================
-// ROTAS DE CANDIDATO - Login e Cadastro
-// ============================================================
 
 app.get('/login-candidato', (req, res) => {
     const erro = req.query.erro || null;
@@ -246,10 +225,8 @@ app.get('/dashboard-candidato', authCandidato, async (req, res) => {
             .sort({ dataInscricao: -1 })
             .toArray();
 
-        // Extrai os IDs das Vagas que ele se inscreveu
         const idsVagas = minhasCandidaturasDocs.map(c => c.vagaId);
         
-        // Puxa o objeto real das vagas usando os IDs
         const vagasCandidatadas = await db.collection('vagas')
             .find({ _id: { $in: idsVagas } })
             .toArray();
@@ -275,7 +252,6 @@ app.post('/candidatar/:id', authCandidato, async (req, res) => {
         const vagaObjId = new ObjectId(vagaId);
         const candidatoObjId = new ObjectId(candidatoId);
 
-        // Verifica se já existe para não duplicar
         const existente = await db.collection('candidaturas').findOne({
             vagaId: vagaObjId,
             candidatoId: candidatoObjId
@@ -317,9 +293,6 @@ app.post('/remover-candidatura/:id', authCandidato, async (req, res) => {
     }
 });
 
-// ============================================================
-// ROTAS DE EMPRESA - Login e Cadastro
-// ============================================================
 
 app.get('/login-empresa', (req, res) => {
     const erro = req.query.erro || null;
@@ -419,7 +392,6 @@ app.get('/dashboard-empresa/vaga/:id/candidatos', authEmpresa, async (req, res) 
     try {
         const vagaIdObj = new ObjectId(req.params.id);
 
-        // Verifica se a vaga pertence mesmo à empresa logada
         const vaga = await db.collection('vagas').findOne({
             _id: vagaIdObj,
             empresa: req.session.empresa.nomeEmpresa
@@ -429,14 +401,11 @@ app.get('/dashboard-empresa/vaga/:id/candidatos', authEmpresa, async (req, res) 
             return res.status(404).send('Vaga não encontrada ou não autorizada.');
         }
 
-        // Recupera todas candidaturas dessa vaga
         const inscricoes = await db.collection('candidaturas').find({ vagaId: vagaIdObj }).toArray();
         const candidatosIds = inscricoes.map(i => i.candidatoId);
 
-        // Localiza dados sensíveis (perfil) desses candidatos
         const candidatos = await db.collection('candidatos').find({ _id: { $in: candidatosIds } }).toArray();
 
-        // Mapeia mesclando a data de inscrição com os dados do candidato (Opcional, porém útil)
         const candidatosDetalhados = candidatos.map(cand => {
             const inscricao = inscricoes.find(i => i.candidatoId.toString() === cand._id.toString());
             return {
@@ -488,7 +457,6 @@ app.post('/remover-vaga/:id', authEmpresa, async (req, res) => {
         const vagaId = req.params.id;
         if (!ObjectId.isValid(vagaId)) return res.status(400).send('Vaga inválida');
 
-        // Garante que só a empresa dona da vaga pode apagar
         await db.collection('vagas').deleteOne({
             _id: new ObjectId(vagaId),
             empresa: req.session.empresa.nomeEmpresa
@@ -644,9 +612,6 @@ async function popularVagasFicticias() {
     console.log(`✅ ${vagas.length} vagas fictícias inseridas com sucesso!`);
 }
 
-// ============================================================
-// INICIALIZA O SERVIDOR E BANCO DE DADOS
-// ============================================================
 
 async function main() {
     try {
@@ -656,12 +621,10 @@ async function main() {
         
         console.log('✅ Conectado ao MongoDB com sucesso!');
 
-        // Cria os índices baseados nas regras do banco (ex: e-mails e CNPJ não podem repetir)
         await db.collection('candidatos').createIndex({ email: 1 }, { unique: true });
         await db.collection('empresas').createIndex({ email: 1 }, { unique: true });
         await db.collection('empresas').createIndex({ cnpj: 1 }, { unique: true });
 
-        // Chama a função para popular vagas caso o banco esteja limpo
         await popularVagasFicticias();
         
         app.listen(PORT, () => {
