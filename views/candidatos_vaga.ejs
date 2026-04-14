@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StartLocal - Candidatos da Vaga</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+    <%- include('partials/navbar') %>
+
+    <main class="flex-grow-1 py-5">
+        <div class="container container-lg-vagas">
+            
+            <!-- BREADCRUMB -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/dashboard-empresa">Painel da Empresa</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= vaga.titulo %></li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm mt-3 p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="fw-bold text-primary mb-1"><%= vaga.titulo %></h3>
+                        <p class="text-muted mb-0"><i class="bi bi-people me-2"></i>Candidatos Inscritos: <strong><%= candidatos.length %></strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="fw-bold mb-3"><i class="bi bi-person-lines-fill me-2 text-primary"></i>Lista de Candidatos</h5>
+
+            <% if (candidatos && candidatos.length > 0) { %>
+                <div class="row g-3">
+                    <% candidatos.forEach(function(cand) { %>
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm vaga-card">
+                                <div class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                                    
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="bi bi-person-circle text-primary avatar-md"></i>
+                                        <div>
+                                            <h5 class="fw-bold mb-1"><%= cand.nome %></h5>
+                                            <div class="text-muted small">
+                                                <span class="me-3"><i class="bi bi-envelope me-1"></i><a href="mailto:<%= cand.email %>" class="text-decoration-none"><%= cand.email %></a></span>
+                                                <span><i class="bi bi-mortarboard me-1"></i><%= cand.curso || 'Não especificado' %></span>
+                                            </div>
+                                            
+                                            <!-- Habilidades Bages -->
+                                            <div class="d-flex flex-wrap gap-1 mt-2">
+                                                <% if (cand.habilidades) { %>
+                                                    <% cand.habilidades.split(',').forEach(function(skill) { %>
+                                                        <span class="badge bg-light text-dark border"><%= skill.trim() %></span>
+                                                    <% }) %>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-md-end border-md-start ps-md-4">
+                                        <p class="text-muted small mb-2">Inscrito em:</p>
+                                        <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 border border-success-subtle rounded-pill">
+                                            <%= cand.dataInscricao ? new Date(cand.dataInscricao).toLocaleDateString('pt-BR') : 'Data não disponível' %>
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="text-center py-5 bg-white rounded shadow-sm border border-dashed border-secondary-subtle">
+                    <i class="bi bi-inbox display-4 text-muted mb-3 opacity-50"></i>
+                    <h5 class="fw-bold text-dark">Nenhum candidato ainda.</h5>
+                    <p class="text-muted small">Sua vaga está visível, aguarde os estudantes se inscreverem!</p>
+                </div>
+            <% } %>
+
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

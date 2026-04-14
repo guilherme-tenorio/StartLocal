@@ -24,7 +24,7 @@
                         <div class="card-body text-center p-4">
                             <!-- Avatar -->
                             <div class="mb-3">
-                                <i class="bi bi-person-circle text-primary" style="font-size: 5.5rem;"></i>
+                                <i class="bi bi-person-circle text-primary avatar-xl"></i>
                             </div>
                             
                             <!-- Informações Principais -->
@@ -35,7 +35,7 @@
                             
                             <!-- Formação -->
                             <div class="text-start mb-4 mt-4">
-                                <h6 class="fw-bold text-secondary text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">
+                                <h6 class="fw-bold text-secondary text-uppercase title-uppercase-sm">
                                     Formação Acadêmica
                                 </h6>
                                 <p class="mb-0 fs-6">
@@ -46,7 +46,7 @@
                             
                             <!-- Skills -->
                             <div class="text-start">
-                                <h6 class="fw-bold text-secondary text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">
+                                <h6 class="fw-bold text-secondary text-uppercase title-uppercase-sm">
                                     Minhas Habilidades (Skills)
                                 </h6>
                                 <div class="d-flex flex-wrap gap-2 mt-2">
@@ -84,11 +84,16 @@
                                                 <h6 class="fw-bold mb-1"><%= vaga.titulo %></h6>
                                                 <small class="text-muted"><i class="bi bi-building me-1"></i><%= vaga.empresa %></small>
                                             </div>
-                                            <div>
-                                                <span class="badge bg-success py-2"><i class="bi bi-check2-circle me-1"></i>Inscrito</span>
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge bg-success py-2 d-none d-md-inline-block"><i class="bi bi-check2-circle me-1"></i>Inscrito</span>
                                                 <a href="/vaga/<%= vaga._id %>" class="btn btn-sm btn-outline-secondary ms-2" title="Ver Vaga">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
+                                                <form action="/remover-candidatura/<%= vaga._id %>" method="POST" onsubmit="return confirm('Tem certeza que deseja cancelar sua candidatura nesta vaga?');" class="ms-2">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancelar Candidatura">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     <% }) %>

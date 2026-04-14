@@ -72,7 +72,8 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <p class="text-success small fw-bold mb-0"><%= vaga.bolsa %> — <%= vaga.cargaHoraria %></p>
                                         <div class="d-flex gap-2">
-                                            <a href="/vaga/<%= vaga._id %>" class="btn btn-outline-secondary btn-sm" title="Ver Vaga"><i class="bi bi-eye"></i></a>
+                                            <a href="/dashboard-empresa/vaga/<%= vaga._id %>/candidatos" class="btn btn-outline-primary btn-sm" title="Ver Candidatos"><i class="bi bi-people"></i></a>
+                                            <a href="/vaga/<%= vaga._id %>" class="btn btn-outline-secondary btn-sm" title="Ver Vaga na visão pública"><i class="bi bi-eye"></i></a>
                                             <form action="/remover-vaga/<%= vaga._id %>" method="POST" onsubmit="return confirm('Tem certeza que deseja APAGAR esta vaga definitivamente?');">
                                                 <button type="submit" class="btn btn-outline-danger btn-sm" title="Remover Vaga">
                                                     <i class="bi bi-trash"></i>

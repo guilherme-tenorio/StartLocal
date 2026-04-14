@@ -13,7 +13,7 @@
     <%- include('partials/navbar') %>
 
     <main class="flex-grow-1 py-5">
-        <div class="container" style="max-width: 800px;">
+        <div class="container container-lg-vagas">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/vagas">Vagas</a></li>
@@ -70,9 +70,16 @@
                 <div class="text-center mt-2 d-grid">
                     <% if (candidato) { %>
                         <% if (jaCandidatou) { %>
-                            <button class="btn btn-success btn-lg fw-bold" disabled>
-                                <i class="bi bi-check-circle-fill me-2"></i> Você já se candidatou à esta vaga
-                            </button>
+                            <div class="d-flex flex-column gap-2">
+                                <button class="btn btn-success btn-lg fw-bold" disabled>
+                                    <i class="bi bi-check-circle-fill me-2"></i> Candidatura Realizada
+                                </button>
+                                <form action="/remover-candidatura/<%= vaga._id %>" method="POST" onsubmit="return confirm('Confirmar desistência da vaga?');">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                                        Retirar Candidatura
+                                    </button>
+                                </form>
+                            </div>
                         <% } else { %>
                             <form action="/candidatar/<%= vaga._id %>" method="POST">
                                 <button type="submit" class="btn btn-primary btn-lg fw-bold w-100">

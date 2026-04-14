@@ -298,6 +298,25 @@ app.post('/candidatar/:id', authCandidato, async (req, res) => {
     }
 });
 
+app.post('/remover-candidatura/:id', authCandidato, async (req, res) => {
+    try {
+        const vagaId = req.params.id;
+        const candidatoId = req.session.candidato.id;
+
+        if (!ObjectId.isValid(vagaId)) return res.status(400).send('Vaga inválida');
+
+        await db.collection('candidaturas').deleteOne({
+            vagaId: new ObjectId(vagaId),
+            candidatoId: new ObjectId(candidatoId)
+        });
+
+        res.redirect('/dashboard-candidato?sucesso=candidatura_removida');
+    } catch (err) {
+        console.error(err);
+        res.redirect('/dashboard-candidato?erro=remocao_falhou');
+    }
+});
+
 // ============================================================
 // ROTAS DE EMPRESA - Login e Cadastro
 // ============================================================
@@ -393,6 +412,48 @@ app.get('/dashboard-empresa', authEmpresa, async (req, res) => {
         });
     } catch (err) {
         res.status(500).send('Erro ao carregar o dashboard.');
+    }
+});
+
+app.get('/dashboard-empresa/vaga/:id/candidatos', authEmpresa, async (req, res) => {
+    try {
+        const vagaIdObj = new ObjectId(req.params.id);
+
+        // Verifica se a vaga pertence mesmo à empresa logada
+        const vaga = await db.collection('vagas').findOne({
+            _id: vagaIdObj,
+            empresa: req.session.empresa.nomeEmpresa
+        });
+
+        if (!vaga) {
+            return res.status(404).send('Vaga não encontrada ou não autorizada.');
+        }
+
+        // Recupera todas candidaturas dessa vaga
+        const inscricoes = await db.collection('candidaturas').find({ vagaId: vagaIdObj }).toArray();
+        const candidatosIds = inscricoes.map(i => i.candidatoId);
+
+        // Localiza dados sensíveis (perfil) desses candidatos
+        const candidatos = await db.collection('candidatos').find({ _id: { $in: candidatosIds } }).toArray();
+
+        // Mapeia mesclando a data de inscrição com os dados do candidato (Opcional, porém útil)
+        const candidatosDetalhados = candidatos.map(cand => {
+            const inscricao = inscricoes.find(i => i.candidatoId.toString() === cand._id.toString());
+            return {
+                ...cand,
+                dataInscricao: inscricao ? inscricao.dataInscricao : null
+            };
+        });
+
+        res.render('candidatos_vaga', {
+            empresa: req.session.empresa,
+            vaga,
+            candidatos: candidatosDetalhados
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Erro ao consultar candidatos da vaga.');
     }
 });
 
