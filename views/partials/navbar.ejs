@@ -1,29 +1,58 @@
-<nav class="navbar navbar-expand-lg bg-primary">
+<nav class="navbar navbar-expand-lg bg-primary" aria-label="Navegação Principal">
     <div class="container-fluid px-4">
-        <a class="navbar-brand text-white fw-bold" href="/"><i class="bi bi-briefcase-fill me-2"></i>StartLocal</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
+        <!-- Ícone Revertido -->
+        <a class="navbar-brand text-white fw-bold d-flex align-items-center" href="/" aria-label="Página Inicial do StartLocal">
+            <i class="bi bi-briefcase-fill me-2"></i>StartLocal
+        </a>
+        <button class="navbar-toggler border-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
+            <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto gap-1">
+            <ul class="navbar-nav ms-auto gap-3 align-items-lg-center">
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="/">Início</a>
+                    <a class="nav-link text-white <%= typeof currentPath !== 'undefined' && currentPath === '/' ? 'nav-active' : '' %>" href="/" aria-label="Acessar o Início">Início</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="/about">Sobre</a>
+                    <a class="nav-link text-white <%= typeof currentPath !== 'undefined' && currentPath === '/about' ? 'nav-active' : '' %>" href="/about" aria-label="Sobre o StartLocal">Sobre</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        Vagas por Nível
+                    <a class="nav-link text-white dropdown-toggle <%= typeof currentPath !== 'undefined' && currentPath.startsWith('/vaga') ? 'nav-active' : '' %>" href="#" id="vagasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Vagas
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/vagas?nivel=basico"><span class="badge bg-success me-2">Básico</span>Para iniciantes</a></li>
-                        <li><a class="dropdown-item" href="/vagas?nivel=intermediario"><span class="badge bg-warning text-dark me-2">Intermediário</span>Com experiência prévia</a></li>
-                        <li><a class="dropdown-item" href="/vagas?nivel=avancado"><span class="badge bg-danger me-2">Avançado</span>Alta senioridade</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="vagasDropdown">
+                        <li><a class="dropdown-item" href="/vagas?nivel=basico" aria-label="Vagas de Ensino Básico"><span class="badge bg-success me-2">Básico</span>Para iniciantes</a></li>
+                        <li><a class="dropdown-item" href="/vagas?nivel=intermediario" aria-label="Vagas de Ensino Intermediário"><span class="badge bg-warning text-dark me-2">Intermediário</span>Com experiência prévia</a></li>
+                        <li><a class="dropdown-item" href="/vagas?nivel=avancado" aria-label="Vagas de Ensino Avançado"><span class="badge bg-danger me-2">Avançado</span>Alta senioridade</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="/vagas">Ver todas as vagas</a></li>
+                        <li><a class="dropdown-item fw-bold text-primary" href="/vagas" aria-label="Visualizar todas as vagas">Ver todas as vagas</a></li>
                     </ul>
                 </li>
+                
+                <!-- VISÃO INTELIGENTE DE SESSÃO -->
+                <% if (typeof candidato !== 'undefined' && candidato) { %>
+                    <li class="nav-item ms-lg-3">
+                        <a href="/dashboard-candidato" class="btn <%= typeof currentPath !== 'undefined' && currentPath.includes('dashboard') ? 'btn-light text-primary' : 'btn-outline-light' %> btn-sm fw-bold">
+                            <i class="bi bi-person-fill me-1"></i>Meu Painel
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/logout" class="nav-link text-white small" aria-label="Sair da conta">Sair</a>
+                    </li>
+                <% } else if (typeof empresa !== 'undefined' && empresa) { %>
+                    <li class="nav-item ms-lg-3">
+                        <a href="/dashboard-empresa" class="btn <%= typeof currentPath !== 'undefined' && currentPath.includes('dashboard') ? 'btn-light text-primary' : 'btn-warning' %> btn-sm fw-bold">
+                            <i class="bi bi-building me-1"></i>Painel da Empresa
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/logout" class="nav-link text-white small" aria-label="Sair da conta">Sair</a>
+                    </li>
+                <% } else { %>
+                    <!-- SE NÃO LOGADO: Botões Públicos -->
+                    <li class="nav-item ms-lg-3">
+                        <a href="/login-candidato" class="btn <%= typeof currentPath !== 'undefined' && currentPath.includes('login') ? 'btn-light text-primary' : 'btn-outline-light' %> btn-sm fw-bold">Login</a>
+                    </li>
+                <% } %>
             </ul>
         </div>
     </div>

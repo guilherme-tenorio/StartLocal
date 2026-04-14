@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StartLocal - Detalhes da Vaga</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+    <%- include('partials/navbar') %>
+
+    <main class="flex-grow-1 py-5">
+        <div class="container" style="max-width: 800px;">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/vagas">Vagas</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= vaga.titulo %></li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm mt-3 p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h2 class="fw-bold mb-0 text-primary"><%= vaga.titulo %></h2>
+                    <div>
+                        <% if (vaga.nivel === 'basico') { %>
+                            <span class="badge bg-success fs-6">Básico</span>
+                        <% } else if (vaga.nivel === 'intermediario') { %>
+                            <span class="badge bg-warning text-dark fs-6">Intermediário</span>
+                        <% } else { %>
+                            <span class="badge bg-danger fs-6">Avançado</span>
+                        <% } %>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-3 mb-4 text-muted border-bottom pb-4">
+                    <span><i class="bi bi-building me-1"></i><%= vaga.empresa %></span>
+                    <span><i class="bi bi-geo-alt me-1"></i><%= vaga.cidade %></span>
+                    <span><i class="bi bi-wifi me-1"></i><%= vaga.modalidade %></span>
+                    <span><i class="bi bi-tag me-1"></i><%= vaga.area %></span>
+                </div>
+
+                <h5 class="fw-bold"><i class="bi bi-card-text me-2 text-primary"></i>Descrição</h5>
+                <p class="text-muted"><%= vaga.descricao %></p>
+
+                <h5 class="fw-bold mt-4"><i class="bi bi-check2-circle me-2 text-primary"></i>Requisitos</h5>
+                <ul class="list-group list-group-flush mb-4">
+                    <% if (vaga.requisitos && vaga.requisitos.length > 0) { %>
+                        <% vaga.requisitos.forEach(function(req) { %>
+                            <li class="list-group-item bg-transparent text-muted"><i class="bi bi-dot"></i> <%= req %></li>
+                        <% }) %>
+                    <% } else { %>
+                        <li class="list-group-item bg-transparent text-muted">A combinar</li>
+                    <% } %>
+                </ul>
+
+                <div class="row g-3 bg-light rounded p-3 mb-4">
+                    <div class="col-6">
+                        <small class="text-muted d-block">Bolsa Auxílio</small>
+                        <span class="fw-bold text-success fs-5"><%= vaga.bolsa || 'A combinar' %></span>
+                    </div>
+                    <div class="col-6 text-end">
+                        <small class="text-muted d-block">Carga Horária</small>
+                        <span class="fw-bold fs-5"><%= vaga.cargaHoraria || 'Não informada' %></span>
+                    </div>
+                </div>
+
+                <div class="text-center mt-2 d-grid">
+                    <% if (candidato) { %>
+                        <% if (jaCandidatou) { %>
+                            <button class="btn btn-success btn-lg fw-bold" disabled>
+                                <i class="bi bi-check-circle-fill me-2"></i> Você já se candidatou à esta vaga
+                            </button>
+                        <% } else { %>
+                            <form action="/candidatar/<%= vaga._id %>" method="POST">
+                                <button type="submit" class="btn btn-primary btn-lg fw-bold w-100">
+                                    <i class="bi bi-send-fill me-2"></i> Confirmar Candidatura
+                                </button>
+                            </form>
+                        <% } %>
+                    <% } else if (empresa) { %>
+                        <button class="btn btn-secondary btn-lg fw-bold" disabled>
+                            Você está logado como Empresa
+                        </button>
+                    <% } else { %>
+                        <a href="/login-candidato" class="btn btn-outline-primary btn-lg fw-bold">
+                            Faça Login como Candidato para se Candidatar
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

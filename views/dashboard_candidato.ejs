@@ -3,117 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StartLocal - Meu Dashboard</title>
+    <title>StartLocal - Meu Perfil</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100 bg-light">
 
-    <!-- NAVBAR COM USUÁRIO LOGADO -->
-    <nav class="navbar navbar-expand-lg bg-primary">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand text-white fw-bold" href="/"><i class="bi bi-briefcase-fill me-2"></i>StartLocal</a>
-            <div class="ms-auto d-flex align-items-center gap-3">
-                <span class="text-white">
-                    <i class="bi bi-person-circle me-1"></i>
-                    Olá, <strong><%= candidato.nome.split(' ')[0] %></strong>
-                </span>
-                <a href="/vagas" class="btn btn-light btn-sm">
-                    <i class="bi bi-search me-1"></i>Ver Vagas
-                </a>
-                <a href="/logout" class="btn btn-outline-light btn-sm">
-                    <i class="bi bi-box-arrow-right me-1"></i>Sair
-                </a>
-            </div>
-        </div>
-    </nav>
+    <!-- NAVBAR COM SESSÃO INTELIGENTE -->
+    <%- include('partials/navbar') %>
 
     <main class="flex-grow-1 py-5">
         <div class="container">
-
-            <!-- BOAS VINDAS -->
-            <div class="row mb-4">
-                <div class="col">
-                    <div class="bg-light rounded p-4 d-flex align-items-center gap-3">
-                        <i class="bi bi-person-circle display-4 text-primary"></i>
-                        <div>
-                            <h4 class="fw-bold mb-1">Bem-vindo, <%= candidato.nome %>!</h4>
-                            <p class="text-muted mb-0"><%= candidato.email %></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARDS RÁPIDOS -->
-            <div class="row g-3 mb-5">
-                <div class="col-md-4">
-                    <a href="/vagas?nivel=basico" class="text-decoration-none">
-                        <div class="card border-0 shadow-sm text-center p-3 h-100">
-                            <div class="card-body">
-                                <span class="badge bg-success fs-6 px-3 py-2">Básico</span>
-                                <p class="mt-2 mb-0 text-muted small">Para quem está começando</p>
+            <!-- HEADER DO DASHBOARD -->
+            <div class="row g-4">
+                
+                <!-- COLUNA ESQUERDA: PERFIL DO USUÁRIO -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <!-- Avatar -->
+                            <div class="mb-3">
+                                <i class="bi bi-person-circle text-primary" style="font-size: 5.5rem;"></i>
                             </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="/vagas?nivel=intermediario" class="text-decoration-none">
-                        <div class="card border-0 shadow-sm text-center p-3 h-100">
-                            <div class="card-body">
-                                <span class="badge bg-warning text-dark fs-6 px-3 py-2">Intermediário</span>
-                                <p class="mt-2 mb-0 text-muted small">Com alguma experiência</p>
+                            
+                            <!-- Informações Principais -->
+                            <h4 class="fw-bold mb-1"><%= candidato.nome %></h4>
+                            <p class="text-muted mb-4"><i class="bi bi-envelope me-2"></i><%= candidato.email %></p>
+                            
+                            <hr class="text-muted">
+                            
+                            <!-- Formação -->
+                            <div class="text-start mb-4 mt-4">
+                                <h6 class="fw-bold text-secondary text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">
+                                    Formação Acadêmica
+                                </h6>
+                                <p class="mb-0 fs-6">
+                                    <i class="bi bi-mortarboard-fill text-primary me-2"></i> 
+                                    <%= candidato.curso || 'Curso não cadastrado' %>
+                                </p>
                             </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="/vagas?nivel=avancado" class="text-decoration-none">
-                        <div class="card border-0 shadow-sm text-center p-3 h-100">
-                            <div class="card-body">
-                                <span class="badge bg-danger fs-6 px-3 py-2">Avançado</span>
-                                <p class="mt-2 mb-0 text-muted small">Alta senioridade técnica</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- VAGAS RECENTES -->
-            <h5 class="fw-bold mb-3"><i class="bi bi-clock-history me-2 text-primary"></i>Vagas Recentes</h5>
-            <div class="row g-3">
-                <% vagasRecentes.forEach(function(vaga) { %>
-                    <div class="col-md-6">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h6 class="card-title fw-bold mb-0"><%= vaga.titulo %></h6>
-                                    <% if (vaga.nivel === 'basico') { %>
-                                        <span class="badge bg-success ms-2">Básico</span>
-                                    <% } else if (vaga.nivel === 'intermediario') { %>
-                                        <span class="badge bg-warning text-dark ms-2">Intermediário</span>
+                            
+                            <!-- Skills -->
+                            <div class="text-start">
+                                <h6 class="fw-bold text-secondary text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">
+                                    Minhas Habilidades (Skills)
+                                </h6>
+                                <div class="d-flex flex-wrap gap-2 mt-2">
+                                    <% if (candidato.habilidades) { %>
+                                        <% candidato.habilidades.split(',').forEach(function(skill) { %>
+                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-3 py-2 rounded-pill">
+                                                <%= skill.trim() %>
+                                            </span>
+                                        <% }) %>
                                     <% } else { %>
-                                        <span class="badge bg-danger ms-2">Avançado</span>
+                                        <span class="text-muted small">Nenhuma habilidade cadastrada no momento.</span>
                                     <% } %>
                                 </div>
-                                <p class="text-muted small mb-1">
-                                    <i class="bi bi-building me-1"></i><%= vaga.empresa %> &nbsp;|&nbsp;
-                                    <i class="bi bi-geo-alt me-1"></i><%= vaga.cidade %>
-                                </p>
-                                <p class="text-success small fw-bold mb-2"><%= vaga.bolsa %> — <%= vaga.cargaHoraria %></p>
-                                <a href="/vagas" class="btn btn-outline-primary btn-sm">Ver detalhes</a>
                             </div>
                         </div>
                     </div>
-                <% }) %>
-            </div>
+                </div>
 
-            <div class="text-center mt-4">
-                <a href="/vagas" class="btn btn-primary">
-                    <i class="bi bi-search me-2"></i>Ver todas as vagas
-                </a>
-            </div>
+                <!-- COLUNA DIREITA: CONTEÚDO PRINCIPAL -->
+                <div class="col-lg-8">
+                    
+                    <!-- PAINEL DE CANDIDATURAS -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-3 border-bottom pb-2">
+                                <i class="bi bi-send-check-fill text-success me-2"></i>Vagas que me Candidatei
+                            </h5>
+                            
+                            <!-- Loop de vagas candidatadas pelo Banco -->
+                            <% if (typeof vagasCandidatadas !== 'undefined' && vagasCandidatadas.length > 0) { %>
+                                <div class="list-group list-group-flush border rounded">
+                                    <% vagasCandidatadas.forEach(function(vaga) { %>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                            <div>
+                                                <h6 class="fw-bold mb-1"><%= vaga.titulo %></h6>
+                                                <small class="text-muted"><i class="bi bi-building me-1"></i><%= vaga.empresa %></small>
+                                            </div>
+                                            <div>
+                                                <span class="badge bg-success py-2"><i class="bi bi-check2-circle me-1"></i>Inscrito</span>
+                                                <a href="/vaga/<%= vaga._id %>" class="btn btn-sm btn-outline-secondary ms-2" title="Ver Vaga">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                            <% } else { %>
+                                <!-- Placeholder vazio -->
+                                <div class="text-center py-5 bg-light rounded text-muted border border-dashed border-secondary-subtle">
+                                    <i class="bi bi-folder2-open display-4 mb-2 opacity-50"></i>
+                                    <h5 class="fw-bold text-dark mt-2">Nenhuma candidatura ativa</h5>
+                                    <p class="small mb-4 px-md-5">As vagas que você demonstrar interesse e enviar seu currículo aparecerão listadas aqui para você acompanhar o status do processo seletivo.</p>
+                                    <a href="/vagas" class="btn btn-outline-primary fw-bold px-4">
+                                        Buscar Novas Oportunidades
+                                    </a>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
 
+                    <!-- VAGAS RECOMENDADAS PELO SISTEMA -->
+                    <h5 class="fw-bold mb-3 mt-5">
+                        <i class="bi bi-stars text-warning me-2"></i>Oportunidades Recomendadas
+                    </h5>
+                    
+                    <div class="row g-3">
+                        <% if (vagasRecentes && vagasRecentes.length > 0) { %>
+                            <% vagasRecentes.slice(0, 4).forEach(function(vaga) { %>
+                                <div class="col-md-6">
+                                    <div class="card h-100 border-0 shadow-sm vaga-card">
+                                        <div class="card-body d-flex flex-column">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="card-title fw-bold mb-0 text-truncate pe-2"><%= vaga.titulo %></h6>
+                                                <% if (vaga.nivel === 'basico') { %>
+                                                    <span class="badge bg-success">BSC</span>
+                                                <% } else if (vaga.nivel === 'intermediario') { %>
+                                                    <span class="badge bg-warning text-dark">INT</span>
+                                                <% } else { %>
+                                                    <span class="badge bg-danger">AVN</span>
+                                                <% } %>
+                                            </div>
+                                            <p class="text-muted small mb-1">
+                                                <i class="bi bi-building me-1"></i><%= vaga.empresa %>
+                                            </p>
+                                            <p class="text-success small fw-bold mb-3"><%= vaga.bolsa %> — <%= vaga.cargaHoraria %></p>
+                                            
+                                            <div class="mt-auto">
+                                                <a href="/vaga/<%= vaga._id %>" class="btn btn-outline-primary btn-sm w-100 fw-bold">Ver detalhes da vaga</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <div class="col-12 text-center text-muted py-4">
+                                <p>Não há vagas recomendadas no momento.</p>
+                            </div>
+                        <% } %>
+                    </div>
+                    
+                </div>
+            </div>
         </div>
     </main>
 
