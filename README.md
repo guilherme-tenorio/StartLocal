@@ -38,7 +38,7 @@ Para rodar este protótipo na sua própria máquina local (localhost), siga as d
 
 ### Pré-requisitos
 - Ter o [Node.js](https://nodejs.org/en/) instalado (Recomendável a versão LTS).
-- Um *Cluster* em andamento no [MongoDB Atlas](https://www.mongodb.com/atlas) (Ou instância local paralela instalada).
+- Um cluster ativo no [MongoDB Atlas](https://www.mongodb.com/atlas) com connection string para o `.env`.
 
 ### Procedimentos
 1. **Clone do Repositório**

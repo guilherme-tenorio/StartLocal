@@ -2,7 +2,7 @@
     <div class="container-fluid px-4">
         <!-- Ícone Revertido -->
         <a class="navbar-brand text-white fw-bold d-flex align-items-center" href="/" aria-label="Página Inicial do StartLocal">
-            <i class="bi bi-briefcase-fill me-2"></i>StartLocal
+            <i class="bi bi-briefcase-fill me-2" aria-hidden="true"></i>StartLocal
         </a>
         <button class="navbar-toggler border-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
             <span class="navbar-toggler-icon icon-invert-light"></span>
@@ -30,9 +30,12 @@
                 
                 <!-- VISÃO INTELIGENTE DE SESSÃO -->
                 <% if (typeof candidato !== 'undefined' && candidato) { %>
-                    <li class="nav-item ms-lg-3">
+                    <li class="nav-item">
+                        <a class="nav-link text-white <%= typeof currentPath !== 'undefined' && currentPath === '/meu-curriculo' ? 'nav-active' : '' %>" href="/meu-curriculo">Meu Currículo</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
                         <a href="/dashboard-candidato" class="btn <%= typeof currentPath !== 'undefined' && currentPath.includes('dashboard') ? 'btn-light text-primary' : 'btn-outline-light' %> btn-sm fw-bold">
-                            <i class="bi bi-person-fill me-1"></i>Meu Painel
+                            <i class="bi bi-person-fill me-1" aria-hidden="true"></i>Meu Painel
                         </a>
                     </li>
                     <li class="nav-item">
@@ -41,7 +44,7 @@
                 <% } else if (typeof empresa !== 'undefined' && empresa) { %>
                     <li class="nav-item ms-lg-3">
                         <a href="/dashboard-empresa" class="btn <%= typeof currentPath !== 'undefined' && currentPath.includes('dashboard') ? 'btn-light text-primary' : 'btn-warning' %> btn-sm fw-bold">
-                            <i class="bi bi-building me-1"></i>Painel da Empresa
+                            <i class="bi bi-building me-1" aria-hidden="true"></i>Painel da Empresa
                         </a>
                     </li>
                     <li class="nav-item">

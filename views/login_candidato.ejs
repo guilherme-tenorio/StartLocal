@@ -15,8 +15,8 @@
     <main class="flex-grow-1 d-flex justify-content-center align-items-center py-5">
         <div class="card p-4 shadow form-login">
             <div class="text-center mb-4">
-                <i class="bi bi-person-circle display-4 text-primary"></i>
-                <h3 class="mt-2">Login — Candidato</h3>
+                <i class="bi bi-person-circle display-4 text-primary" aria-hidden="true"></i>
+                <h1 class="h3 mt-2">Login — Candidato</h1>
             </div>
 
             <% if (erro) { %>
@@ -33,12 +33,12 @@
 
             <form action="/login-candidato" method="POST">
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">E-mail</label>
-                    <input type="email" name="email" class="form-control" required placeholder="exemplo@email.com"/>
+                    <label for="email" class="form-label fw-semibold">E-mail</label>
+                    <input type="email" id="email" name="email" class="form-control" required placeholder="exemplo@email.com"/>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Senha</label>
-                    <input type="password" name="senha" class="form-control" required/>
+                    <label for="senha" class="form-label fw-semibold">Senha</label>
+                    <input type="password" id="senha" name="senha" class="form-control" required/>
                 </div>
                 <div class="mb-3 text-center">
                     <a href="#" class="text-muted small">Esqueci minha senha</a>
@@ -47,7 +47,7 @@
                     <p class="mb-0">Ainda não tem conta? <a href="/cadastro-candidato">Cadastre-se</a></p>
                 </div>
                 <button type="submit" class="btn btn-primary w-100 fw-bold">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
+                    <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i>Entrar
                 </button>
             </form>
 

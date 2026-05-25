@@ -10,88 +10,137 @@
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
 
-    <!-- NAVBAR COM SESSÃO INTELIGENTE -->
     <%- include('partials/navbar') %>
 
     <main class="flex-grow-1 py-5">
         <div class="container">
-            <!-- HEADER DO DASHBOARD -->
+            <% if (locals.sucesso) { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
+                    <% if (sucesso === 'curriculo_salvo') { %>
+                        Currículo atualizado com sucesso!
+                    <% } else if (sucesso === 'inscricao_realizada') { %>
+                        Inscrição na vaga realizada com sucesso!
+                    <% } else if (sucesso === 'candidatura_removida') { %>
+                        Candidatura cancelada com sucesso.
+                    <% } else { %>
+                        <%= sucesso %>
+                    <% } %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+            <% } %>
+
+            <% if (locals.erro) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+                    <% if (erro === 'remocao_falhou') { %>
+                        Não foi possível cancelar a candidatura. Tente novamente.
+                    <% } else { %>
+                        <%= erro %>
+                    <% } %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+            <% } %>
+
             <div class="row g-4">
-                
-                <!-- COLUNA ESQUERDA: PERFIL DO USUÁRIO -->
                 <div class="col-lg-4">
                     <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body text-center p-4">
-                            <!-- Avatar -->
-                            <div class="mb-3">
-                                <i class="bi bi-person-circle text-primary avatar-xl"></i>
+                        <div class="card-body p-4">
+                            <div class="text-center mb-3">
+                                <i class="bi bi-person-circle text-primary avatar-xl" aria-hidden="true"></i>
+                                <h1 class="h4 fw-bold mb-1 mt-2"><%= candidato.nome %></h1>
+                                <p class="text-muted mb-0"><i class="bi bi-envelope me-2" aria-hidden="true"></i><%= candidato.email %></p>
                             </div>
-                            
-                            <!-- Informações Principais -->
-                            <h4 class="fw-bold mb-1"><%= candidato.nome %></h4>
-                            <p class="text-muted mb-4"><i class="bi bi-envelope me-2"></i><%= candidato.email %></p>
-                            
-                            <hr class="text-muted">
-                            
-                            <!-- Formação -->
-                            <div class="text-start mb-4 mt-4">
-                                <h6 class="fw-bold text-secondary text-uppercase title-uppercase-sm">
-                                    Formação Acadêmica
-                                </h6>
+
+                            <a href="/meu-curriculo" class="btn btn-primary w-100 fw-bold mb-4">
+                                <i class="bi bi-pencil-square me-2" aria-hidden="true"></i>Editar meu currículo
+                            </a>
+
+                            <section class="mb-4">
+                                <h2 class="h6 fw-bold text-secondary text-uppercase title-uppercase-sm">Formação</h2>
                                 <p class="mb-0 fs-6">
-                                    <i class="bi bi-mortarboard-fill text-primary me-2"></i> 
-                                    <%= candidato.curso || 'Curso não cadastrado' %>
+                                    <i class="bi bi-mortarboard-fill text-primary me-2" aria-hidden="true"></i>
+                                    <%= candidato.curso || 'Curso não informado' %>
                                 </p>
-                            </div>
-                            
-                            <!-- Skills -->
-                            <div class="text-start">
-                                <h6 class="fw-bold text-secondary text-uppercase title-uppercase-sm">
-                                    Minhas Habilidades (Skills)
-                                </h6>
-                                <div class="d-flex flex-wrap gap-2 mt-2">
+                            </section>
+
+                            <% if (candidato.resumo) { %>
+                                <section class="mb-4">
+                                    <h2 class="h6 fw-bold text-secondary text-uppercase title-uppercase-sm">Resumo</h2>
+                                    <p class="small text-muted mb-0"><%= candidato.resumo %></p>
+                                </section>
+                            <% } %>
+
+                            <section class="mb-4">
+                                <h2 class="h6 fw-bold text-secondary text-uppercase title-uppercase-sm">Habilidades</h2>
+                                <div class="d-flex flex-wrap gap-2">
                                     <% if (candidato.habilidades) { %>
                                         <% candidato.habilidades.split(',').forEach(function(skill) { %>
-                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-3 py-2 rounded-pill">
-                                                <%= skill.trim() %>
-                                            </span>
+                                            <% if (skill.trim()) { %>
+                                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-3 py-2 rounded-pill"><%= skill.trim() %></span>
+                                            <% } %>
                                         <% }) %>
                                     <% } else { %>
-                                        <span class="text-muted small">Nenhuma habilidade cadastrada no momento.</span>
+                                        <span class="text-muted small">Nenhuma habilidade cadastrada.</span>
                                     <% } %>
                                 </div>
-                            </div>
+                            </section>
+
+                            <section class="mb-4">
+                                <h2 class="h6 fw-bold text-secondary text-uppercase title-uppercase-sm">Conhecimentos</h2>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <% if (candidato.conhecimentos) { %>
+                                        <% candidato.conhecimentos.split(',').forEach(function(item) { %>
+                                            <% if (item.trim()) { %>
+                                                <span class="badge bg-secondary bg-opacity-10 text-secondary border px-3 py-2 rounded-pill"><%= item.trim() %></span>
+                                            <% } %>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <span class="text-muted small">Nenhuma área de conhecimento cadastrada.</span>
+                                    <% } %>
+                                </div>
+                            </section>
+
+                            <% if (candidato.experiencia) { %>
+                                <section>
+                                    <h2 class="h6 fw-bold text-secondary text-uppercase title-uppercase-sm">Experiência</h2>
+                                    <p class="small text-muted mb-0 text-pre-line"><%= candidato.experiencia %></p>
+                                </section>
+                            <% } %>
+
+                            <% if (!candidato.resumo && !candidato.habilidades && !candidato.conhecimentos && !candidato.experiencia) { %>
+                                <div class="alert alert-info small mb-0" role="status">
+                                    <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+                                    Complete seu currículo para destacar seu perfil nas candidaturas.
+                                </div>
+                            <% } %>
                         </div>
                     </div>
                 </div>
 
-                <!-- COLUNA DIREITA: CONTEÚDO PRINCIPAL -->
                 <div class="col-lg-8">
-                    
-                    <!-- PAINEL DE CANDIDATURAS -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
-                            <h5 class="fw-bold mb-3 border-bottom pb-2">
-                                <i class="bi bi-send-check-fill text-success me-2"></i>Vagas que me Candidatei
-                            </h5>
+                            <h2 class="h5 fw-bold mb-3 border-bottom pb-2">
+                                <i class="bi bi-send-check-fill text-success me-2" aria-hidden="true"></i>Vagas que me candidatei
+                            </h2>
                             
-                            <!-- Loop de vagas candidatadas pelo Banco -->
                             <% if (typeof vagasCandidatadas !== 'undefined' && vagasCandidatadas.length > 0) { %>
                                 <div class="list-group list-group-flush border rounded">
                                     <% vagasCandidatadas.forEach(function(vaga) { %>
                                         <div class="list-group-item d-flex justify-content-between align-items-center py-3">
                                             <div>
-                                                <h6 class="fw-bold mb-1"><%= vaga.titulo %></h6>
-                                                <small class="text-muted"><i class="bi bi-building me-1"></i><%= vaga.empresa %></small>
+                                                <h3 class="h6 fw-bold mb-1"><%= vaga.titulo %></h3>
+                                                <small class="text-muted"><i class="bi bi-building me-1" aria-hidden="true"></i><%= vaga.empresa %></small>
                                             </div>
                                             <div class="d-flex align-items-center">
-                                                <span class="badge bg-success py-2 d-none d-md-inline-block"><i class="bi bi-check2-circle me-1"></i>Inscrito</span>
-                                                <a href="/vaga/<%= vaga._id %>" class="btn btn-sm btn-outline-secondary ms-2" title="Ver Vaga">
-                                                    <i class="bi bi-eye"></i>
+                                                <span class="badge bg-success py-2 d-none d-md-inline-block"><i class="bi bi-check2-circle me-1" aria-hidden="true"></i>Inscrito</span>
+                                                <a href="/vaga/<%= vaga._id %>" class="btn btn-sm btn-outline-secondary ms-2" title="Ver vaga" aria-label="Ver vaga <%= vaga.titulo %>">
+                                                    <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                                 <form action="/remover-candidatura/<%= vaga._id %>" method="POST" onsubmit="return confirm('Tem certeza que deseja cancelar sua candidatura nesta vaga?');" class="ms-2">
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancelar Candidatura">
-                                                        <i class="bi bi-trash"></i>
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancelar candidatura" aria-label="Cancelar candidatura em <%= vaga.titulo %>">
+                                                        <i class="bi bi-trash" aria-hidden="true"></i>
                                                     </button>
                                                 </form>
                                             </div>
@@ -99,23 +148,19 @@
                                     <% }) %>
                                 </div>
                             <% } else { %>
-                                <!-- Placeholder vazio -->
                                 <div class="text-center py-5 bg-light rounded text-muted border border-dashed border-secondary-subtle">
-                                    <i class="bi bi-folder2-open display-4 mb-2 opacity-50"></i>
-                                    <h5 class="fw-bold text-dark mt-2">Nenhuma candidatura ativa</h5>
-                                    <p class="small mb-4 px-md-5">As vagas que você demonstrar interesse e enviar seu currículo aparecerão listadas aqui para você acompanhar o status do processo seletivo.</p>
-                                    <a href="/vagas" class="btn btn-outline-primary fw-bold px-4">
-                                        Buscar Novas Oportunidades
-                                    </a>
+                                    <i class="bi bi-folder2-open display-4 mb-2 opacity-50" aria-hidden="true"></i>
+                                    <h3 class="h5 fw-bold text-dark mt-2">Nenhuma candidatura ativa</h3>
+                                    <p class="small mb-4 px-md-5">As vagas em que você se inscrever aparecerão aqui.</p>
+                                    <a href="/vagas" class="btn btn-outline-primary fw-bold px-4">Buscar oportunidades</a>
                                 </div>
                             <% } %>
                         </div>
                     </div>
 
-                    <!-- VAGAS RECOMENDADAS PELO SISTEMA -->
-                    <h5 class="fw-bold mb-3 mt-5">
-                        <i class="bi bi-stars text-warning me-2"></i>Oportunidades Recomendadas
-                    </h5>
+                    <h2 class="h5 fw-bold mb-3">
+                        <i class="bi bi-stars text-warning me-2" aria-hidden="true"></i>Oportunidades recomendadas
+                    </h2>
                     
                     <div class="row g-3">
                         <% if (vagasRecentes && vagasRecentes.length > 0) { %>
@@ -124,7 +169,7 @@
                                     <div class="card h-100 border-0 shadow-sm vaga-card">
                                         <div class="card-body d-flex flex-column">
                                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                                <h6 class="card-title fw-bold mb-0 text-truncate pe-2"><%= vaga.titulo %></h6>
+                                                <h3 class="h6 card-title fw-bold mb-0 text-truncate pe-2"><%= vaga.titulo %></h3>
                                                 <% if (vaga.nivel === 'basico') { %>
                                                     <span class="badge bg-success">BSC</span>
                                                 <% } else if (vaga.nivel === 'intermediario') { %>
@@ -134,12 +179,11 @@
                                                 <% } %>
                                             </div>
                                             <p class="text-muted small mb-1">
-                                                <i class="bi bi-building me-1"></i><%= vaga.empresa %>
+                                                <i class="bi bi-building me-1" aria-hidden="true"></i><%= vaga.empresa %>
                                             </p>
                                             <p class="text-success small fw-bold mb-3"><%= vaga.bolsa %> — <%= vaga.cargaHoraria %></p>
-                                            
                                             <div class="mt-auto">
-                                                <a href="/vaga/<%= vaga._id %>" class="btn btn-outline-primary btn-sm w-100 fw-bold">Ver detalhes da vaga</a>
+                                                <a href="/vaga/<%= vaga._id %>" class="btn btn-outline-primary btn-sm w-100 fw-bold">Ver detalhes</a>
                                             </div>
                                         </div>
                                     </div>
@@ -147,11 +191,10 @@
                             <% }) %>
                         <% } else { %>
                             <div class="col-12 text-center text-muted py-4">
-                                <p>Não há vagas recomendadas no momento.</p>
+                                <p class="mb-0">Não há vagas recomendadas no momento.</p>
                             </div>
                         <% } %>
                     </div>
-                    
                 </div>
             </div>
         </div>

@@ -15,8 +15,8 @@
     <main class="flex-grow-1 d-flex justify-content-center align-items-center py-5">
         <div class="card p-4 shadow form-login-lg">
             <div class="text-center mb-4">
-                <i class="bi bi-building-fill display-4 text-warning"></i>
-                <h3 class="mt-2">Cadastrar Empresa</h3>
+                <i class="bi bi-building-fill display-4 text-warning" aria-hidden="true"></i>
+                <h1 class="h3 mt-2">Cadastrar Empresa</h1>
                 <p class="text-muted small">Publique vagas e encontre talentos em TI</p>
             </div>
 
@@ -36,20 +36,20 @@
 
             <form action="/cadastro-empresa" method="POST">
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Nome da Empresa*</label>
-                    <input type="text" name="nomeEmpresa" class="form-control" required placeholder="Ex: TechSolutions LTDA"/>
+                    <label for="nomeEmpresa" class="form-label fw-semibold">Nome da Empresa*</label>
+                    <input type="text" id="nomeEmpresa" name="nomeEmpresa" class="form-control" required placeholder="Ex: TechSolutions LTDA"/>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">CNPJ*</label>
-                    <input type="text" name="cnpj" class="form-control" required placeholder="00.000.000/0000-00"/>
+                    <label for="cnpj" class="form-label fw-semibold">CNPJ*</label>
+                    <input type="text" id="cnpj" name="cnpj" class="form-control" required placeholder="00.000.000/0000-00"/>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">E-mail Corporativo*</label>
-                    <input type="email" name="email" class="form-control" required placeholder="contato@empresa.com"/>
+                    <label for="email" class="form-label fw-semibold">E-mail Corporativo*</label>
+                    <input type="email" id="email" name="email" class="form-control" required placeholder="contato@empresa.com"/>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Área de Atuação</label>
-                    <select name="area" class="form-select">
+                    <label for="area" class="form-label fw-semibold">Área de Atuação</label>
+                    <select id="area" name="area" class="form-select">
                         <option value="">Selecione...</option>
                         <option value="Desenvolvimento de Software">Desenvolvimento de Software</option>
                         <option value="Infraestrutura e Redes">Infraestrutura e Redes</option>
@@ -61,16 +61,16 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Senha*</label>
-                    <input type="password" name="senha" class="form-control" required minlength="6"/>
+                    <label for="senha" class="form-label fw-semibold">Senha*</label>
+                    <input type="password" id="senha" name="senha" class="form-control" required minlength="6"/>
                 </div>
                 <div class="mb-4">
-                    <label class="form-label fw-semibold">Confirmar Senha*</label>
-                    <input type="password" name="confirmarSenha" class="form-control" required minlength="6"/>
+                    <label for="confirmarSenha" class="form-label fw-semibold">Confirmar Senha*</label>
+                    <input type="password" id="confirmarSenha" name="confirmarSenha" class="form-control" required minlength="6"/>
                 </div>
 
                 <button type="submit" class="btn btn-warning w-100 fw-bold">
-                    <i class="bi bi-building-add me-2"></i>Cadastrar Empresa
+                    <i class="bi bi-building-add me-2" aria-hidden="true"></i>Cadastrar Empresa
                 </button>
             </form>
 

@@ -40,6 +40,11 @@
   font-size: 1.3rem;
 }
 
+/* Texto com quebras de linha (currículo) */
+.text-pre-line {
+  white-space: pre-line;
+}
+
 /* ============================
    Acessibilidade e UX (WCAG 2)
    ============================ */

@@ -15,8 +15,13 @@ const PORT = 3000;
 // ============================================================
 // CONEXÃO COM MONGODB
 // ============================================================
-const MONGODB_URI = (process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017').trim();
+const MONGODB_URI = (process.env.MONGODB_URI || '').trim();
 const DB_NAME = (process.env.MONGODB_DB || 'startlocal').trim();
+
+if (!MONGODB_URI) {
+    console.error('❌ Defina MONGODB_URI no arquivo .env (connection string do MongoDB Atlas).');
+    process.exit(1);
+}
 
 let db;
 
@@ -61,6 +66,38 @@ function authEmpresa(req, res, next) {
     } else {
         res.redirect('/login-empresa?erro=acesso_negado');
     }
+}
+
+function normalizarLista(texto) {
+    if (!texto || typeof texto !== 'string') return '';
+    return texto
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean)
+        .join(', ');
+}
+
+function candidatoParaSessao(doc) {
+    return {
+        id: doc._id.toString(),
+        nome: doc.nome,
+        email: doc.email,
+        curso: doc.curso || '',
+        habilidades: doc.habilidades || '',
+        conhecimentos: doc.conhecimentos || '',
+        resumo: doc.resumo || '',
+        experiencia: doc.experiencia || '',
+    };
+}
+
+function dadosCurriculoDoForm(body) {
+    return {
+        curso: (body.curso || '').trim(),
+        habilidades: normalizarLista(body.habilidades || ''),
+        conhecimentos: normalizarLista(body.conhecimentos || ''),
+        resumo: (body.resumo || '').trim().slice(0, 2000),
+        experiencia: (body.experiencia || '').trim().slice(0, 3000),
+    };
 }
 
 
@@ -153,11 +190,7 @@ app.post('/login-candidato', async (req, res) => {
             return res.render('login_candidato', { erro: 'E-mail ou senha inválidos.' });
         }
 
-        req.session.candidato = {
-            id: candidato._id.toString(),
-            nome: candidato.nome,
-            email: candidato.email,
-        };
+        req.session.candidato = candidatoParaSessao(candidato);
 
         res.redirect('/dashboard-candidato');
     } catch (err) {
@@ -191,13 +224,15 @@ app.post('/cadastro-candidato', async (req, res) => {
 
         const senhaCriptografada = await bcrypt.hash(senha, 10);
 
+        const curriculo = dadosCurriculoDoForm({ curso, habilidades, conhecimentos: '', resumo: '', experiencia: '' });
+
         const novoCandidato = {
             nome,
             email,
             senha: senhaCriptografada,
-            curso,
-            habilidades,
-            criadoEm: new Date()
+            ...curriculo,
+            criadoEm: new Date(),
+            curriculoAtualizadoEm: new Date(),
         };
         
         await db.collection('candidatos').insertOne(novoCandidato);
@@ -218,8 +253,19 @@ app.post('/cadastro-candidato', async (req, res) => {
 app.get('/dashboard-candidato', authCandidato, async (req, res) => {
     try {
         const candidatoIdObj = new ObjectId(req.session.candidato.id);
-        
-        // Busca as candidaturas do banco
+
+        const candidatoDoc = await db.collection('candidatos').findOne(
+            { _id: candidatoIdObj },
+            { projection: { senha: 0 } }
+        );
+
+        if (!candidatoDoc) {
+            req.session.destroy(() => res.redirect('/login-candidato?erro=acesso_negado'));
+            return;
+        }
+
+        req.session.candidato = candidatoParaSessao(candidatoDoc);
+
         const minhasCandidaturasDocs = await db.collection('candidaturas')
             .find({ candidatoId: candidatoIdObj })
             .sort({ dataInscricao: -1 })
@@ -232,13 +278,86 @@ app.get('/dashboard-candidato', authCandidato, async (req, res) => {
             .toArray();
 
         const vagasRecentes = await db.collection('vagas').find().sort({ criadoEm: -1 }).limit(4).toArray();
+
+        const sucesso = req.query.sucesso || null;
+        const erro = req.query.erro || null;
         res.render('dashboard_candidato', {
-            candidato: req.session.candidato,
+            candidato: candidatoDoc,
             vagasCandidatadas,
             vagasRecentes,
+            sucesso,
+            erro,
         });
     } catch (err) {
+        console.error(err);
         res.status(500).send('Erro ao carregar o dashboard.');
+    }
+});
+
+app.get('/meu-curriculo', authCandidato, async (req, res) => {
+    try {
+        const candidatoDoc = await db.collection('candidatos').findOne(
+            { _id: new ObjectId(req.session.candidato.id) },
+            { projection: { senha: 0 } }
+        );
+
+        if (!candidatoDoc) {
+            return res.redirect('/login-candidato?erro=acesso_negado');
+        }
+
+        res.render('meu_curriculo', {
+            candidato: candidatoDoc,
+            erro: null,
+            sucesso: req.query.sucesso === 'salvo' ? 'Currículo salvo com sucesso!' : null,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Erro ao carregar o currículo.');
+    }
+});
+
+app.post('/meu-curriculo', authCandidato, async (req, res) => {
+    try {
+        const candidatoIdObj = new ObjectId(req.session.candidato.id);
+        const curriculo = dadosCurriculoDoForm(req.body);
+
+        const atualizado = await db.collection('candidatos').updateOne(
+            { _id: candidatoIdObj },
+            {
+                $set: {
+                    ...curriculo,
+                    curriculoAtualizadoEm: new Date(),
+                },
+            }
+        );
+
+        if (atualizado.matchedCount === 0) {
+            return res.render('meu_curriculo', {
+                candidato: req.session.candidato,
+                erro: 'Não foi possível atualizar o currículo.',
+                sucesso: null,
+            });
+        }
+
+        const candidatoDoc = await db.collection('candidatos').findOne(
+            { _id: candidatoIdObj },
+            { projection: { senha: 0 } }
+        );
+
+        req.session.candidato = candidatoParaSessao(candidatoDoc);
+
+        res.redirect('/meu-curriculo?sucesso=salvo');
+    } catch (err) {
+        console.error(err);
+        const candidatoDoc = await db.collection('candidatos').findOne(
+            { _id: new ObjectId(req.session.candidato.id) },
+            { projection: { senha: 0 } }
+        );
+        res.render('meu_curriculo', {
+            candidato: candidatoDoc || req.session.candidato,
+            erro: 'Erro ao salvar o currículo. Tente novamente.',
+            sucesso: null,
+        });
     }
 });
 

@@ -1,0 +1,97 @@
+---
+description: Enforces WCAG 2.1 Level AA for StartLocal UI—contrast 1.4.3, keyboard 2.1.1, focus 2.4.7, semantics 1.3.1, forms 3.3.x, reflow 1.4.10 in views/ and public/css/style.css. Use when building or reviewing EJS, HTML, or CSS.
+globs: views/**/*.ejs,public/**/*.css
+alwaysApply: false
+---
+
+# WCAG 2.1 AA — StartLocal
+
+Toda alteração em **`views/`** ou **`public/`** deve resultar em interface **perceptível, operável, compreensível e robusta** (WCAG 2.1 nível **AA**). Skill detalhada: `.agents/skills/wcag-acessibility/SKILL.md`.
+
+## Princípios (POUR)
+
+| Princípio | Exigência mínima no StartLocal |
+|-----------|--------------------------------|
+| Perceptível | Contraste AA; não só cor para nível de vaga (badge + texto) |
+| Operável | Teclado completo; foco visível; modais fecham com Escape |
+| Compreensível | Labels, erros em pt-BR, `lang="pt-br"` |
+| Robusto | HTML semântico + ARIA só quando necessário |
+
+## Contraste (1.4.3 / 1.4.11)
+
+- Texto normal: **≥ 4.5:1** vs fundo
+- Texto grande (≥18pt ou 14pt bold): **≥ 3:1**
+- Manter `.text-muted { color: #5c636a }` em `style.css` (não reverter para `#6c757d`)
+- Badge intermediário: `bg-warning` + `text-dark`
+- Estados de foco/hover: distinguíveis além da cor
+
+## Teclado (2.1.1 / 2.4.3 / 2.4.7)
+
+- Toda ação (links, botões, formulários, dropdown navbar) acessível com **Tab / Shift+Tab / Enter / Space**
+- **`:focus-visible`** obrigatório — padrão do projeto:
+
+```css
+:focus-visible {
+  outline: 3px solid #0a58ca !important;
+  outline-offset: 3px !important;
+}
+```
+
+- Nunca `outline: none` sem substituto de alto contraste
+- Modais Bootstrap: fechar com **Escape**; retorno de foco coerente
+- Considerar **skip link** para `#main` em páginas com navbar longa
+
+## Semântica e ARIA (1.3.1 / 4.1.2)
+
+- Um **`h1`** por página; hierarquia **h1 → h2 → h3** sem saltos
+- Landmarks: `<main>`, `<nav aria-label="...">`, `<footer>`
+- Seguir `navbar.ejs`: `aria-label` em links; toggler com `aria-controls`, `aria-expanded`
+- Ícone só → `aria-label`; decorativo → `aria-hidden="true"`
+- Preferir `<button>` / `<a href>` nativos em vez de `div` clicável
+
+## Imagens e ícones (1.1.1)
+
+- Informativa → `alt` sucinto em pt-BR
+- Decorativa → `alt=""` ou `aria-hidden` se redundante ao texto adjacente
+
+## Formulários (3.3.1 / 3.3.2)
+
+- `<label for="id">` ou label envolvendo o controle
+- Erro: texto visível + `role="alert"`; dinâmico → `aria-describedby`
+- Obrigatório: indicar por **texto**, não só cor
+- Agrupar com `fieldset` + `legend` quando fizer sentido (cadastro)
+
+## Conteúdo dinâmico (4.1.3)
+
+- Alerts de sucesso/erro: `role="alert"` (já usado em login/cadastro)
+- Atualizações importantes: considerar `aria-live="polite"`
+
+## Reflow e alvo (1.4.4 / 1.4.10 / 2.5.5)
+
+- Zoom **200%** utilizável em home, login e listagem de vagas
+- Alvos de toque ~**44×44px** quando possível (`btn-sm` excessivo em CTAs principais — evitar)
+
+## Movimento (2.3.3 — recomendado)
+
+- Respeitar `prefers-reduced-motion` para animações não essenciais
+- Evitar piscar; transições do projeto (`0.2s–0.3s`) são aceitáveis
+
+## Checklist antes de concluir (UI)
+
+- [ ] Navegação completa só com teclado
+- [ ] Foco sempre visível (`:focus-visible`)
+- [ ] Contraste de texto e badges verificado
+- [ ] Formulários com label + erro legível
+- [ ] Nível de vaga legível sem depender só da cor
+- [ ] Lighthouse/axe sem falhas críticas nas páginas alteradas
+
+## Proibido
+
+- CSS inline nas `.ejs` (usar `style.css`)
+- Remover foco visível por estética
+- `href="#"` sem nome acessível em produção
+- Informação exclusiva por cor
+
+## Referência
+
+[WCAG 2.1 Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/) · PRD seção 6 (Acessibilidade): `docs/prd/StartLocal-prd-2026-05-05.md`

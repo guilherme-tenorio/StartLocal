@@ -19,32 +19,32 @@
             <!-- FEEDBACK -->
             <% if (typeof query !== 'undefined' && query && query.sucesso === 'vaga_publicada') { %>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle me-2"></i>Vaga publicada com sucesso!
+                    <i class="bi bi-check-circle me-2" aria-hidden="true"></i>Vaga publicada com sucesso!
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <% } %>
 
             <!-- BOAS VINDAS -->
             <div class="bg-light rounded p-4 mb-4 d-flex align-items-center gap-3">
-                <i class="bi bi-building-fill display-4 text-warning"></i>
+                <i class="bi bi-building-fill display-4 text-warning" aria-hidden="true"></i>
                 <div>
-                    <h4 class="fw-bold mb-1"><%= empresa.nomeEmpresa %></h4>
+                    <h1 class="h4 fw-bold mb-1"><%= empresa.nomeEmpresa %></h1>
                     <p class="text-muted mb-0"><%= empresa.email %> &nbsp;·&nbsp; <strong><%= minhasVagas.length %></strong> vaga(s) publicada(s)</p>
                 </div>
                 <div class="ms-auto">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNovaVaga">
-                        <i class="bi bi-plus-circle me-2"></i>Publicar Nova Vaga
+                        <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>Publicar Nova Vaga
                     </button>
                 </div>
             </div>
 
             <!-- VAGAS PUBLICADAS -->
-            <h5 class="fw-bold mb-3"><i class="bi bi-list-ul me-2 text-primary"></i>Minhas Vagas</h5>
+            <h2 class="h5 fw-bold mb-3"><i class="bi bi-list-ul me-2 text-primary" aria-hidden="true"></i>Minhas Vagas</h2>
 
             <% if (minhasVagas.length === 0) { %>
                 <div class="text-center py-5 bg-light rounded">
-                    <i class="bi bi-briefcase display-3 text-muted"></i>
-                    <h5 class="mt-3 text-muted">Você ainda não publicou nenhuma vaga</h5>
+                    <i class="bi bi-briefcase display-3 text-muted" aria-hidden="true"></i>
+                    <h3 class="mt-3 h5 text-muted">Você ainda não publicou nenhuma vaga</h3>
                     <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalNovaVaga">
                         Publicar Primeira Vaga
                     </button>
@@ -56,7 +56,7 @@
                             <div class="card border-0 shadow-sm h-100">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-start">
-                                        <h6 class="fw-bold"><%= vaga.titulo %></h6>
+                                        <h3 class="h6 fw-bold mb-1"><%= vaga.titulo %></h3>
                                         <% if (vaga.nivel === 'basico') { %>
                                             <span class="badge bg-success">Básico</span>
                                         <% } else if (vaga.nivel === 'intermediario') { %>
@@ -66,17 +66,17 @@
                                         <% } %>
                                     </div>
                                     <p class="text-muted small mb-1">
-                                        <i class="bi bi-geo-alt me-1"></i><%= vaga.cidade %> &nbsp;|&nbsp;
-                                        <i class="bi bi-wifi me-1"></i><%= vaga.modalidade %>
+                                        <i class="bi bi-geo-alt me-1" aria-hidden="true"></i><%= vaga.cidade %> &nbsp;|&nbsp;
+                                        <i class="bi bi-wifi me-1" aria-hidden="true"></i><%= vaga.modalidade %>
                                     </p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <p class="text-success small fw-bold mb-0"><%= vaga.bolsa %> — <%= vaga.cargaHoraria %></p>
                                         <div class="d-flex gap-2">
-                                            <a href="/dashboard-empresa/vaga/<%= vaga._id %>/candidatos" class="btn btn-outline-primary btn-sm" title="Ver Candidatos"><i class="bi bi-people"></i></a>
-                                            <a href="/vaga/<%= vaga._id %>" class="btn btn-outline-secondary btn-sm" title="Ver Vaga na visão pública"><i class="bi bi-eye"></i></a>
+                                            <a href="/dashboard-empresa/vaga/<%= vaga._id %>/candidatos" class="btn btn-outline-primary btn-sm" title="Ver Candidatos" aria-label="Ver candidatos da vaga <%= vaga.titulo %>"><i class="bi bi-people" aria-hidden="true"></i></a>
+                                            <a href="/vaga/<%= vaga._id %>" class="btn btn-outline-secondary btn-sm" title="Ver Vaga na visão pública" aria-label="Ver vaga <%= vaga.titulo %> na visão pública"><i class="bi bi-eye" aria-hidden="true"></i></a>
                                             <form action="/remover-vaga/<%= vaga._id %>" method="POST" onsubmit="return confirm('Tem certeza que deseja APAGAR esta vaga definitivamente?');">
-                                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Remover Vaga">
-                                                    <i class="bi bi-trash"></i>
+                                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Remover Vaga" aria-label="Remover vaga <%= vaga.titulo %>">
+                                                    <i class="bi bi-trash" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -101,19 +101,19 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Publicar Nova Vaga</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <h2 class="modal-title h5" id="modalNovaVagaTitle"><i class="bi bi-plus-circle me-2" aria-hidden="true"></i>Publicar Nova Vaga</h2>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
                     <form action="/publicar-vaga" method="POST">
                         <div class="row g-3">
                             <div class="col-md-8">
-                                <label class="form-label fw-semibold">Título da Vaga*</label>
-                                <input type="text" name="titulo" class="form-control" required placeholder="Ex: Estágio em Desenvolvimento Web"/>
+                                <label for="titulo" class="form-label fw-semibold">Título da Vaga*</label>
+                                <input type="text" id="titulo" name="titulo" class="form-control" required placeholder="Ex: Estágio em Desenvolvimento Web"/>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold">Nível*</label>
-                                <select name="nivel" class="form-select" required>
+                                <label for="nivel" class="form-label fw-semibold">Nível*</label>
+                                <select id="nivel" name="nivel" class="form-select" required>
                                     <option value="">Selecione...</option>
                                     <option value="basico">Básico</option>
                                     <option value="intermediario">Intermediário</option>
@@ -121,20 +121,20 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">Cidade*</label>
-                                <input type="text" name="cidade" class="form-control" required placeholder="Ex: Maceió - AL"/>
+                                <label for="cidade" class="form-label fw-semibold">Cidade*</label>
+                                <input type="text" id="cidade" name="cidade" class="form-control" required placeholder="Ex: Maceió - AL"/>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">Modalidade</label>
-                                <select name="modalidade" class="form-select">
+                                <label for="modalidade" class="form-label fw-semibold">Modalidade</label>
+                                <select id="modalidade" name="modalidade" class="form-select">
                                     <option value="Presencial">Presencial</option>
                                     <option value="Híbrido">Híbrido</option>
                                     <option value="Remoto">Remoto</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">Área</label>
-                                <select name="area" class="form-select">
+                                <label for="area" class="form-label fw-semibold">Área</label>
+                                <select id="area" name="area" class="form-select">
                                     <option value="Desenvolvimento">Desenvolvimento</option>
                                     <option value="Infraestrutura">Infraestrutura</option>
                                     <option value="Segurança">Segurança da Informação</option>
@@ -144,27 +144,27 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label fw-semibold">Bolsa</label>
-                                <input type="text" name="bolsa" class="form-control" placeholder="R$ 1.000,00"/>
+                                <label for="bolsa" class="form-label fw-semibold">Bolsa</label>
+                                <input type="text" id="bolsa" name="bolsa" class="form-control" placeholder="R$ 1.000,00"/>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label fw-semibold">Carga Horária</label>
-                                <input type="text" name="cargaHoraria" class="form-control" placeholder="30h/semana"/>
+                                <label for="cargaHoraria" class="form-label fw-semibold">Carga Horária</label>
+                                <input type="text" id="cargaHoraria" name="cargaHoraria" class="form-control" placeholder="30h/semana"/>
                             </div>
                             <div class="col-12">
-                                <label class="form-label fw-semibold">Requisitos</label>
-                                <input type="text" name="requisitos" class="form-control" placeholder="JavaScript, Node.js, Git"/>
+                                <label for="requisitos" class="form-label fw-semibold">Requisitos</label>
+                                <input type="text" id="requisitos" name="requisitos" class="form-control" placeholder="JavaScript, Node.js, Git"/>
                                 <div class="form-text">Separe os requisitos por vírgula</div>
                             </div>
                             <div class="col-12">
-                                <label class="form-label fw-semibold">Descrição da Vaga</label>
-                                <textarea name="descricao" class="form-control" rows="3" placeholder="Descreva as atividades e o perfil desejado..."></textarea>
+                                <label for="descricao" class="form-label fw-semibold">Descrição da Vaga</label>
+                                <textarea id="descricao" name="descricao" class="form-control" rows="3" placeholder="Descreva as atividades e o perfil desejado..."></textarea>
                             </div>
                         </div>
                         <div class="modal-footer px-0 pb-0 mt-3">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-send me-2"></i>Publicar Vaga
+                                <i class="bi bi-send me-2" aria-hidden="true"></i>Publicar Vaga
                             </button>
                         </div>
                     </form>

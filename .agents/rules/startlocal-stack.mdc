@@ -1,0 +1,69 @@
+---
+description: StartLocal product scope, Node/Express/EJS/MongoDB stack, folder layout, collections, session roles, env setup, and canonical PRD path. Applies to every agent session in this repository.
+alwaysApply: true
+---
+
+# StartLocal Stack
+
+## Produto
+
+Plataforma web SSR que conecta **candidatos** a **empresas** via vagas de estágio em TI (`basico`, `intermediario`, `avancado`).
+
+## Pilha
+
+| Camada | Tecnologia |
+|--------|------------|
+| Runtime | Node.js (CommonJS) |
+| Servidor | Express 5 — `index.js` |
+| Views | EJS 5 + `views/partials/` |
+| UI | Bootstrap 5.3.8 CDN, Bootstrap Icons |
+| Estilos | `public/css/style.css` |
+| Banco | MongoDB driver nativo 7 |
+| Auth | `bcrypt`, `express-session`, `dotenv` |
+
+## Estrutura
+
+```
+index.js
+views/partials/{navbar,footer}.ejs
+views/*.ejs
+public/css/style.css
+docs/prd/StartLocal-prd-2026-05-05.md   ← PRD vigente (existe no repo)
+.agents/rules/ · .agents/skills/
+AGENTS.md
+```
+
+## Coleções MongoDB
+
+| Coleção | Uso |
+|---------|-----|
+| `candidatos` | Conta estudante |
+| `empresas` | Conta organização |
+| `vagas` | Ofertas (`empresa` = string `nomeEmpresa`) |
+| `candidaturas` | Inscrição candidato ↔ vaga |
+
+Índices: email único (candidatos/empresas); cnpj único (empresas).
+
+## Sessão
+
+- `req.session.candidato` **ou** `req.session.empresa`
+- `res.locals`: `candidato`, `empresa`, `currentPath`
+
+## PRD (fonte de requisitos)
+
+**Arquivo:** `docs/prd/StartLocal-prd-2026-05-05.md` — contém rotas, estado de implementação, glossário e backlog (ex.: **EVOL-01** edição de vaga pendente). Consultar antes de features novas; atualizar após mudanças de escopo.
+
+## Execução
+
+```bash
+npm install
+node index.js   # npm run dev
+# http://localhost:3000
+```
+
+## Convenções
+
+- UI e erros em **português (pt-BR)**
+- Lógica em `index.js`; HTML em `views/`; CSS em `public/`
+- Acessibilidade: WCAG 2.1 AA — rule `wcag-acessibility.mdc`
+- Não commitar `.env`

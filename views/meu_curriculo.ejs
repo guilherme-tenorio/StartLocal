@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StartLocal - Meu Currículo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+    <%- include('partials/navbar') %>
+
+    <main class="flex-grow-1 py-5">
+        <div class="container">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/dashboard-candidato">Meu Painel</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Meu Currículo</li>
+                </ol>
+            </nav>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4 p-md-5">
+                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3 mb-4">
+                                <div>
+                                    <h1 class="h3 fw-bold mb-1">
+                                        <i class="bi bi-file-earmark-person text-primary me-2" aria-hidden="true"></i>Meu Currículo
+                                    </h1>
+                                    <p class="text-muted mb-0">
+                                        Monte seu perfil profissional. As empresas veem essas informações quando você se candidata a uma vaga.
+                                    </p>
+                                </div>
+                                <% if (candidato.curriculoAtualizadoEm) { %>
+                                    <span class="badge bg-light text-dark border">
+                                        Atualizado em <%= new Date(candidato.curriculoAtualizadoEm).toLocaleDateString('pt-BR') %>
+                                    </span>
+                                <% } %>
+                            </div>
+
+                            <% if (erro) { %>
+                                <div class="alert alert-danger" role="alert">
+                                    <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i><%= erro %>
+                                </div>
+                            <% } %>
+                            <% if (sucesso) { %>
+                                <div class="alert alert-success" role="alert">
+                                    <i class="bi bi-check-circle me-2" aria-hidden="true"></i><%= sucesso %>
+                                </div>
+                            <% } %>
+
+                            <form action="/meu-curriculo" method="POST">
+                                <fieldset class="mb-4">
+                                    <legend class="h6 fw-bold text-secondary text-uppercase title-uppercase-sm mb-3">Formação</legend>
+                                    <div class="mb-3">
+                                        <label for="curso" class="form-label fw-semibold">Curso</label>
+                                        <select name="curso" id="curso" class="form-select">
+                                            <option value="">Selecione seu curso...</option>
+                                            <option value="Sistemas de Informação" <%= candidato.curso === 'Sistemas de Informação' ? 'selected' : '' %>>Sistemas de Informação</option>
+                                            <option value="Ciência da Computação" <%= candidato.curso === 'Ciência da Computação' ? 'selected' : '' %>>Ciência da Computação</option>
+                                            <option value="Engenharia de Software" <%= candidato.curso === 'Engenharia de Software' ? 'selected' : '' %>>Engenharia de Software</option>
+                                            <option value="Análise e Desenvolvimento de Sistemas" <%= candidato.curso === 'Análise e Desenvolvimento de Sistemas' ? 'selected' : '' %>>Análise e Desenvolvimento de Sistemas</option>
+                                            <option value="Redes de Computadores" <%= candidato.curso === 'Redes de Computadores' ? 'selected' : '' %>>Redes de Computadores</option>
+                                            <option value="Outro" <%= candidato.curso === 'Outro' ? 'selected' : '' %>>Outro</option>
+                                        </select>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset class="mb-4">
+                                    <legend class="h6 fw-bold text-secondary text-uppercase title-uppercase-sm mb-3">Apresentação</legend>
+                                    <div class="mb-3">
+                                        <label for="resumo" class="form-label fw-semibold">Resumo profissional</label>
+                                        <textarea name="resumo" id="resumo" class="form-control" rows="4" maxlength="2000" placeholder="Conte em poucas linhas quem você é, seus objetivos e o que busca em um estágio."><%= candidato.resumo || '' %></textarea>
+                                        <div class="form-text">Até 2000 caracteres. Visível para as empresas.</div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset class="mb-4">
+                                    <legend class="h6 fw-bold text-secondary text-uppercase title-uppercase-sm mb-3">Habilidades e conhecimentos</legend>
+                                    <div class="mb-3">
+                                        <label for="habilidades" class="form-label fw-semibold">Habilidades técnicas</label>
+                                        <input type="text" name="habilidades" id="habilidades" class="form-control" value="<%= candidato.habilidades || '' %>" placeholder="Ex: JavaScript, Node.js, Git, SQL"/>
+                                        <div class="form-text">Ferramentas, linguagens e tecnologias. Separe por vírgulas.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="conhecimentos" class="form-label fw-semibold">Áreas de conhecimento</label>
+                                        <input type="text" name="conhecimentos" id="conhecimentos" class="form-control" value="<%= candidato.conhecimentos || '' %>" placeholder="Ex: Desenvolvimento web, Banco de dados, Metodologias ágeis"/>
+                                        <div class="form-text">Temas e domínios que você domina ou está aprendendo. Separe por vírgulas.</div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset class="mb-4">
+                                    <legend class="h6 fw-bold text-secondary text-uppercase title-uppercase-sm mb-3">Experiência</legend>
+                                    <div class="mb-3">
+                                        <label for="experiencia" class="form-label fw-semibold">Experiências e projetos</label>
+                                        <textarea name="experiencia" id="experiencia" class="form-control" rows="5" maxlength="3000" placeholder="Cursos, projetos acadêmicos, trabalhos voluntários, estágios anteriores..."><%= candidato.experiencia || '' %></textarea>
+                                        <div class="form-text">Até 3000 caracteres.</div>
+                                    </div>
+                                </fieldset>
+
+                                <div class="d-flex flex-column flex-sm-row gap-2">
+                                    <button type="submit" class="btn btn-primary fw-bold">
+                                        <i class="bi bi-save me-2" aria-hidden="true"></i>Salvar currículo
+                                    </button>
+                                    <a href="/dashboard-candidato" class="btn btn-outline-secondary">Voltar ao painel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

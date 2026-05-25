@@ -1,0 +1,71 @@
+---
+description: StartLocal EJS SSR templates—layout, partials, forms, nivel badges, session UI, and WCAG 2.1 AA markup in views/. Applies when editing views/**/*.ejs.
+globs: views/**/*.ejs
+alwaysApply: false
+---
+
+# EJS Views
+
+Regras para **`views/`**: layout, partials, variáveis e acessibilidade de marcação.
+
+## Layout obrigatório
+
+- `<html lang="pt-br">`
+- Bootstrap 5.3.8 + Icons + `/css/style.css`
+- `<%- include('partials/navbar') %>`
+- **`<main class="flex-grow-1" id="main">`** (ou `id="main-content"`) — alvo de skip link
+- `<%- include('partials/footer') %>`
+- `bootstrap.bundle.min.js` antes de `</body>`
+
+## Partials
+
+| Arquivo | Função |
+|---------|--------|
+| `partials/navbar.ejs` | Menu; `candidato`, `empresa`, `currentPath` |
+| `partials/footer.ejs` | Links e badges de nível |
+
+## Views existentes
+
+`home`, `about`, `vagas`, `vaga_detail`, `login_candidato`, `cadastro_candidato`, `dashboard_candidato`, `login_empresa`, `cadastro_empresa`, `dashboard_empresa`, `candidatos_vaga` — nomenclatura **snake_case**.
+
+## Variáveis (exemplos)
+
+| View | Variáveis |
+|------|-----------|
+| `vagas` | `vagas`, `nivelFiltro`, `totalVagas` |
+| `vaga_detail` | `vaga`, `jaCandidatou` |
+| `dashboard_candidato` | `candidato`, `vagasCandidatadas`, `vagasRecentes` |
+| `dashboard_empresa` | `empresa`, `minhasVagas` |
+
+`index.js` deve passar tudo que a EJS usa.
+
+## Badges de nível
+
+- `basico` → `bg-success`
+- `intermediario` → `bg-warning text-dark`
+- `avancado` → `bg-danger`
+
+Sempre **texto** além da cor (WCAG 1.4.1).
+
+## Formulários
+
+- `method="POST"`, `action` explícito, `name` = `req.body`
+- `<label for="id">` em cada campo
+- Erros: `alert alert-danger` + `role="alert"`
+
+## Acessibilidade (com rule `wcag-acessibility`)
+
+- `aria-label` em controles sem texto visível
+- Breadcrumb: `<nav aria-label="breadcrumb">` (ver `vaga_detail.ejs`)
+- Botões desabilitados: texto que explique o estado
+- Não usar só cor para estado crítico
+
+## Proibido
+
+- CSS inline / `<style>` nas views
+- Texto de UI em inglês
+- Omitir partials em páginas full-page
+
+## PRD
+
+Rotas e critérios de aceitação: `docs/prd/StartLocal-prd-2026-05-05.md`

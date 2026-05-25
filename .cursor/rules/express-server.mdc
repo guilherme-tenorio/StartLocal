@@ -1,0 +1,77 @@
+---
+description: StartLocal Express 5 server in index.js—route map, auth middleware, MongoDB handlers, bcrypt session, error handling, and PRD-aligned scope. Applies when editing index.js.
+globs: index.js
+alwaysApply: false
+---
+
+# Express Server
+
+Regras para **`index.js`**: rotas, middleware, MongoDB e autenticação.
+
+## PRD
+
+Requisitos em **`docs/prd/StartLocal-prd-2026-05-05.md`** (seções 4–5 e 11). O documento **existe** no repositório — use-o para validar escopo. Funcionalidade **não** documentada como implementada (ex.: **EVOL-01** editar vaga) não deve ser assumida como pronta.
+
+## Arquitetura
+
+- Um único `index.js` — sem routers separados
+- `main()`: MongoDB → índices → `popularVagasFicticias()` → `listen(3000)`
+
+## Middleware
+
+1. `urlencoded`, `json`, `static('public')`
+2. `express-session` (2h)
+3. `res.locals`: `candidato`, `empresa`, `currentPath`
+
+## Auth
+
+| Guard | Redirect |
+|-------|----------|
+| `authCandidato` | `/login-candidato?erro=acesso_negado` |
+| `authEmpresa` | `/login-empresa?erro=acesso_negado` |
+
+Login falho: `"E-mail ou senha inválidos."` · Senha: `bcrypt` cost 10.
+
+## Rotas (mapa)
+
+| Método | Rota | Auth |
+|--------|------|------|
+| GET | `/`, `/about`, `/vagas`, `/vaga/:id` | — |
+| GET/POST | `/login-candidato`, `/cadastro-candidato` | — |
+| GET | `/dashboard-candidato` | Candidato |
+| POST | `/candidatar/:id`, `/remover-candidatura/:id` | Candidato |
+| GET/POST | `/login-empresa`, `/cadastro-empresa` | — |
+| GET | `/dashboard-empresa`, `.../vaga/:id/candidatos` | Empresa |
+| POST | `/publicar-vaga`, `/remover-vaga/:id` | Empresa |
+| GET | `/logout` | — |
+
+## Handler padrão
+
+```javascript
+try {
+  if (id && !ObjectId.isValid(id)) return res.status(404).send('...');
+  // db.collection(...)
+  res.render('view', { vars });
+} catch (err) {
+  console.error(err);
+  res.status(500).send('Mensagem em português.');
+}
+```
+
+## Negócio
+
+- `/vagas`: `nivel` ∈ `basico` | `intermediario` | `avancado`
+- Vagas empresa: `empresa === req.session.empresa.nomeEmpresa`
+- Candidatura: evitar duplicata em `candidaturas`
+- `requisitos`: `split(',').map(r => r.trim())`
+
+## Nova rota
+
+1. Conferir PRD (`docs/prd/StartLocal-prd-2026-05-05.md`)
+2. Auth + ownership
+3. View EJS + variáveis `res.render`
+4. Atualizar PRD (Estado + mapa) se escopo mudar
+
+## MongoDB
+
+Driver nativo apenas — não Mongoose em rotas novas.
