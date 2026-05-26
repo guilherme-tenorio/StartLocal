@@ -237,10 +237,7 @@ app.post('/cadastro-candidato', async (req, res) => {
         
         await db.collection('candidatos').insertOne(novoCandidato);
 
-        res.render('cadastro_candidato', {
-            erro: null,
-            sucesso: 'Cadastro realizado com sucesso! Faça seu login.',
-        });
+        res.redirect('/login-candidato');
     } catch (err) {
         console.error(err);
         res.render('cadastro_candidato', {
@@ -480,10 +477,7 @@ app.post('/cadastro-empresa', async (req, res) => {
         };
         await db.collection('empresas').insertOne(novaEmpresa);
 
-        res.render('cadastro_empresa', {
-            erro: null,
-            sucesso: 'Empresa cadastrada com sucesso! Faça seu login.',
-        });
+        res.redirect('/login-empresa');
     } catch (err) {
         console.error(err);
         res.render('cadastro_empresa', {
