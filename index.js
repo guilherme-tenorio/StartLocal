@@ -10,7 +10,7 @@ const session = require('express-session');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // ============================================================
 // CONEXÃO COM MONGODB
@@ -18,12 +18,34 @@ const PORT = 3000;
 const MONGODB_URI = (process.env.MONGODB_URI || '').trim();
 const DB_NAME = (process.env.MONGODB_DB || 'startlocal').trim();
 
-if (!MONGODB_URI) {
-    console.error('❌ Defina MONGODB_URI no arquivo .env (connection string do MongoDB Atlas).');
-    process.exit(1);
-}
-
 let db;
+let mongoClient;
+let mongoConnectionPromise;
+
+async function conectarMongoDB() {
+    if (db) return db;
+
+    if (!MONGODB_URI) {
+        throw new Error('Defina MONGODB_URI nas variaveis de ambiente.');
+    }
+
+    if (!mongoConnectionPromise) {
+        mongoClient = new MongoClient(MONGODB_URI);
+        mongoConnectionPromise = mongoClient.connect();
+    }
+
+    const client = await mongoConnectionPromise;
+    db = client.db(DB_NAME);
+
+    await db.collection('candidatos').createIndex({ email: 1 }, { unique: true });
+    await db.collection('empresas').createIndex({ email: 1 }, { unique: true });
+    await db.collection('empresas').createIndex({ cnpj: 1 }, { unique: true });
+
+    await popularVagasFicticias();
+
+    console.log('MongoDB conectado com sucesso.');
+    return db;
+}
 
 
 app.set('view engine', 'ejs');
@@ -49,6 +71,16 @@ app.use((req, res, next) => {
     res.locals.empresa = req.session ? req.session.empresa : null;
     res.locals.currentPath = req.path;
     next();
+});
+
+app.use(async (req, res, next) => {
+    try {
+        await conectarMongoDB();
+        next();
+    } catch (err) {
+        console.error('Falha ao conectar ao MongoDB:', err);
+        res.status(500).send('Erro ao conectar ao banco de dados.');
+    }
 });
 
 
@@ -728,17 +760,7 @@ async function popularVagasFicticias() {
 
 async function main() {
     try {
-        const client = new MongoClient(MONGODB_URI);
-        await client.connect();
-        db = client.db(DB_NAME);
-        
-        console.log('✅ Conectado ao MongoDB com sucesso!');
-
-        await db.collection('candidatos').createIndex({ email: 1 }, { unique: true });
-        await db.collection('empresas').createIndex({ email: 1 }, { unique: true });
-        await db.collection('empresas').createIndex({ cnpj: 1 }, { unique: true });
-
-        await popularVagasFicticias();
+        await conectarMongoDB();
         
         app.listen(PORT, () => {
             console.log(`🚀 StartLocal rodando em http://localhost:${PORT}`);
@@ -750,4 +772,8 @@ async function main() {
     }
 }
 
-main();
+if (require.main === module && !process.env.VERCEL) {
+    main();
+}
+
+module.exports = app;
